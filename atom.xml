@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="http://wangzx.org/"/>
   <updated>2017-12-21T03:16:26.923Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>http://wangzx.org/</id>
   
   <author>
     <name>John Doe</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://yoursite.com/2017/12/21/hello-world/"/>
-    <id>http://yoursite.com/2017/12/21/hello-world/</id>
+    <link href="http://wangzx.org/2017/12/21/hello-world/"/>
+    <id>http://wangzx.org/2017/12/21/hello-world/</id>
     <published>2017-12-21T03:16:26.923Z</published>
     <updated>2017-12-21T03:16:26.923Z</updated>
     
