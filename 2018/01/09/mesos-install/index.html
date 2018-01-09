@@ -88,16 +88,16 @@
 
 
 
-<meta name="description" content="hi bird how are you! are you ok?">
+<meta name="description" content="#搭建mesos集群本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：|服务器ip|hostname|说明||—-|—-|—-||192.168.32.131|docker1.nd.com|master||192.168.32.132|docker2.nd.com|master||192.168.32.133|docker3.nd.com|master||192">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hi! bird!">
-<meta property="og:url" content="http://wangzx.org/2017/12/21/bird/index.html">
+<meta property="og:title" content="搭建mesos集群！">
+<meta property="og:url" content="http://wangzx.org/2018/01/09/mesos-install/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="hi bird how are you! are you ok?">
-<meta property="og:updated_time" content="2017-12-21T08:46:05.063Z">
+<meta property="og:description" content="#搭建mesos集群本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：|服务器ip|hostname|说明||—-|—-|—-||192.168.32.131|docker1.nd.com|master||192.168.32.132|docker2.nd.com|master||192.168.32.133|docker3.nd.com|master||192">
+<meta property="og:updated_time" content="2018-01-09T12:30:29.861Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hi! bird!">
-<meta name="twitter:description" content="hi bird how are you! are you ok?">
+<meta name="twitter:title" content="搭建mesos集群！">
+<meta name="twitter:description" content="#搭建mesos集群本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：|服务器ip|hostname|说明||—-|—-|—-||192.168.32.131|docker1.nd.com|master||192.168.32.132|docker2.nd.com|master||192.168.32.133|docker3.nd.com|master||192">
 
 
 
@@ -127,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://wangzx.org/2017/12/21/bird/"/>
+  <link rel="canonical" href="http://wangzx.org/2018/01/09/mesos-install/"/>
 
 
 
 
 
-  <title>hi! bird! | Hexo</title>
+  <title>搭建mesos集群！ | Hexo</title>
   
 
 
@@ -193,7 +193,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -203,7 +203,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -240,7 +240,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2017/12/21/bird/">
+    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/01/09/mesos-install/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="John Doe">
@@ -257,7 +257,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">hi! bird!</h1>
+          <h1 class="post-title" itemprop="name headline">搭建mesos集群！</h1>
         
 
         <div class="post-meta">
@@ -267,10 +267,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T15:08:36+08:00">
-                2017-12-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-09T19:08:36+08:00">
+                2018-01-09
               </time>
             
 
@@ -288,12 +288,12 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/前端/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
+                  <a href="/categories/后端/" itemprop="url" rel="index">
+                    <span itemprop="name">后端</span>
                   </a>
                 </span>
 
@@ -310,8 +310,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/21/bird/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2017/12/21/bird/" itemprop="commentsCount"></span>
+                <a href="/2018/01/09/mesos-install/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/01/09/mesos-install/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -339,7 +339,106 @@
       
 
       
-        <p>hi bird how are you! are you ok?</p>
+        <p>#搭建mesos集群<br>本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：<br>|服务器ip|hostname|说明|<br>|—-|—-|—-|<br>|192.168.32.131|docker1.nd.com|master|<br>|192.168.32.132|docker2.nd.com|master|<br>|192.168.32.133|docker3.nd.com|master|<br>|192.168.32.134|docker4.nd.com|slave|<br>|192.168.32.135|docker5.nd.com|slave|<br>|192.168.32.136|docker6.nd.com|slave|</p>
+<p>##服务器基础设置</p>
+<p>###关闭防火墙</p>
+<blockquote>
+<ul>
+<li>systemctl stop firewalld</li>
+<li>systemctl diasble firewalld<br>###关闭selinux</li>
+<li>setenforce 0</li>
+<li>vi /etc/selinux/config</li>
+</ul>
+</blockquote>
+<p>将第6行修改为SELINUX=permissive<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># This file controls the state of SELinux on the system.</span><br><span class="line"># SELINUX= can take one of these three values:</span><br><span class="line">#     enforcing - SELinux security policy is enforced.</span><br><span class="line">#     permissive - SELinux prints warnings instead of enforcing.</span><br><span class="line">#     disabled - No SELinux policy is loaded.</span><br><span class="line">SELINUX=permissive</span><br><span class="line"># SELINUXTYPE= can take one of three two values:</span><br><span class="line">#     targeted - Targeted processes are protected,</span><br><span class="line">#     minimum - Modification of targeted policy. Only selected processes are protected.</span><br><span class="line">#     mls - Multi Level Security protection.</span><br><span class="line">SELINUXTYPE=targeted</span><br></pre></td></tr></table></figure></p>
+<p>###设置hostname</p>
+<blockquote>
+<ul>
+<li>hostnamectl set-hostname docker1-6.nd.com</li>
+</ul>
+</blockquote>
+<p>###修改host文件<br>修改/etc/hosts文件为如下内容，并scp复制到其他5台服务器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.168.32.131 docker1.nd.com</span><br><span class="line">192.168.32.132 docker2.nd.com</span><br><span class="line">192.168.32.133 docker3.nd.com</span><br><span class="line">192.168.32.134 docker4.nd.com</span><br><span class="line">192.168.32.135 docker5.nd.com</span><br><span class="line">192.168.32.136 docker6.nd.com</span><br></pre></td></tr></table></figure></p>
+<p>##安装mesos、zookeeper包<br> 1、分别在6台服务器上执行如下命令</p>
+<blockquote>
+<ul>
+<li>rpm -Uvh <a href="http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm" target="_blank" rel="noopener">http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm</a></li>
+<li>rpm –import /etc/pki/rpm-gpg/RPM-GPG-KEY-mesosphere</li>
+</ul>
+</blockquote>
+<p>2、进入3台master服务器安装mesos、marathon和zookeeper</p>
+<blockquote>
+<ul>
+<li>yum install mesos marathon mesosphere-zookeeper -y</li>
+</ul>
+</blockquote>
+<p>3、进入3台slave服务器安装mesos</p>
+<blockquote>
+<ul>
+<li>yum install mesos -y</li>
+</ul>
+</blockquote>
+<p>##配置mesos、zookeeper</p>
+<p>###配置zookeeper<br>1、修改/var/lib/zookeeper/myid文件，三台master服务器，分别设置为1、2、3<br>2、修改/etc/zookeeper/conf/zoo.cfg文件，在文件末尾添加以下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.1=192.168.32.131:2888:3888</span><br><span class="line">server.2=192.168.32.132:2888:3888</span><br><span class="line">server.3=192.168.32.133:2888:3888</span><br></pre></td></tr></table></figure></p>
+<p>3、启动zookeeper服务</p>
+<blockquote>
+<ul>
+<li>systemctl start zookeeper</li>
+</ul>
+</blockquote>
+<p>4、查看zookeeper服务是否已启动</p>
+<blockquote>
+<ul>
+<li>systemctl is-active zookeeper</li>
+</ul>
+</blockquote>
+<p>###配置mesos-master<br>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
+<p>2、设置/etc/mesos-master/quorum文件中quorum的值，这个值要大于master数量的1/2，我们这里设置为2<br>3、停用mesos-slave</p>
+<blockquote>
+<ul>
+<li>systemctl stop mesos-slave.service</li>
+<li>systemctl disable mesos-slave.service</li>
+</ul>
+</blockquote>
+<p>4、启动mesos-master marathon</p>
+<blockquote>
+<ul>
+<li>systemctl start mesos-master</li>
+<li>marathon –master zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</li>
+</ul>
+</blockquote>
+<p>正常情况下此时已经可以通过<a href="http://docker1.nd.com:5050打开mesos页面" target="_blank" rel="noopener">http://docker1.nd.com:5050打开mesos页面</a></p>
+<p>###配置mesos-slave<br>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
+<p>2、停用mesos-master</p>
+<blockquote>
+<ul>
+<li>systemctl stop mesos-master.service</li>
+<li>systemctl disable mesos-master.service</li>
+</ul>
+</blockquote>
+<p>3、启动mesos-slave</p>
+<blockquote>
+<ul>
+<li>systemctl start mesos-slave</li>
+</ul>
+</blockquote>
+<p>##docker配置<br>如需要在slave上运行docker，除docker自身安装配置外，还需要做如下设置<br>1、指定使用docker容器化</p>
+<blockquote>
+<ul>
+<li>echo ‘docker,mesos’ &gt; /etc/mesos-slave/containerizers</li>
+</ul>
+</blockquote>
+<p>2、考虑到拉取容器镜像等的操作，适当增加timeout的时间</p>
+<blockquote>
+<ul>
+<li>echo ‘5mins’ &gt; /etc/mesos-slave/executor_registration_timeout</li>
+</ul>
+</blockquote>
+<p>3、重启mesos-slave以使上面配置生效</p>
+<blockquote>
+<ul>
+<li>systemctl restart mesos-slave</li>
+</ul>
+</blockquote>
 
       
     </div>
@@ -360,22 +459,6 @@
       
       
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2017/12/21/hello-world/" rel="next" title="hexo入门！">
-                <i class="fa fa-chevron-left"></i> hexo入门！
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-          </div>
-        </div>
       
 
       
@@ -447,8 +530,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -458,8 +541,8 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">2</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -516,7 +599,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 

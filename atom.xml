@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangzx.org/"/>
-  <updated>2017-12-21T08:46:05.063Z</updated>
+  <updated>2018-01-09T12:30:29.861Z</updated>
   <id>http://wangzx.org/</id>
   
   <author>
@@ -17,41 +17,20 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>hi! bird!</title>
-    <link href="http://wangzx.org/2017/12/21/bird/"/>
-    <id>http://wangzx.org/2017/12/21/bird/</id>
-    <published>2017-12-21T07:08:36.000Z</published>
-    <updated>2017-12-21T08:46:05.063Z</updated>
+    <title>搭建mesos集群！</title>
+    <link href="http://wangzx.org/2018/01/09/mesos-install/"/>
+    <id>http://wangzx.org/2018/01/09/mesos-install/</id>
+    <published>2018-01-09T11:08:36.000Z</published>
+    <updated>2018-01-09T12:30:29.861Z</updated>
     
-    <content type="html"><![CDATA[<p>hi bird how are you! are you ok?</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;hi bird how are you! are you ok?&lt;/p&gt;
-
-      
-    
-    </summary>
-    
-      <category term="前端" scheme="http://wangzx.org/categories/%E5%89%8D%E7%AB%AF/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>hexo入门！</title>
-    <link href="http://wangzx.org/2017/12/21/hello-world/"/>
-    <id>http://wangzx.org/2017/12/21/hello-world/</id>
-    <published>2017-12-21T06:08:36.000Z</published>
-    <updated>2017-12-21T12:35:22.817Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><a id="more"></a><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    <content type="html"><![CDATA[<p>#搭建mesos集群<br>本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：<br>|服务器ip|hostname|说明|<br>|—-|—-|—-|<br>|192.168.32.131|docker1.nd.com|master|<br>|192.168.32.132|docker2.nd.com|master|<br>|192.168.32.133|docker3.nd.com|master|<br>|192.168.32.134|docker4.nd.com|slave|<br>|192.168.32.135|docker5.nd.com|slave|<br>|192.168.32.136|docker6.nd.com|slave|</p><p>##服务器基础设置</p><p>###关闭防火墙</p><blockquote><ul><li>systemctl stop firewalld</li><li>systemctl diasble firewalld<br>###关闭selinux</li><li>setenforce 0</li><li>vi /etc/selinux/config</li></ul></blockquote><p>将第6行修改为SELINUX=permissive<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># This file controls the state of SELinux on the system.</span><br><span class="line"># SELINUX= can take one of these three values:</span><br><span class="line">#     enforcing - SELinux security policy is enforced.</span><br><span class="line">#     permissive - SELinux prints warnings instead of enforcing.</span><br><span class="line">#     disabled - No SELinux policy is loaded.</span><br><span class="line">SELINUX=permissive</span><br><span class="line"># SELINUXTYPE= can take one of three two values:</span><br><span class="line">#     targeted - Targeted processes are protected,</span><br><span class="line">#     minimum - Modification of targeted policy. Only selected processes are protected.</span><br><span class="line">#     mls - Multi Level Security protection.</span><br><span class="line">SELINUXTYPE=targeted</span><br></pre></td></tr></table></figure></p><p>###设置hostname</p><blockquote><ul><li>hostnamectl set-hostname docker1-6.nd.com</li></ul></blockquote><p>###修改host文件<br>修改/etc/hosts文件为如下内容，并scp复制到其他5台服务器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.168.32.131 docker1.nd.com</span><br><span class="line">192.168.32.132 docker2.nd.com</span><br><span class="line">192.168.32.133 docker3.nd.com</span><br><span class="line">192.168.32.134 docker4.nd.com</span><br><span class="line">192.168.32.135 docker5.nd.com</span><br><span class="line">192.168.32.136 docker6.nd.com</span><br></pre></td></tr></table></figure></p><p>##安装mesos、zookeeper包<br> 1、分别在6台服务器上执行如下命令</p><blockquote><ul><li>rpm -Uvh <a href="http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm" target="_blank" rel="noopener">http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm</a></li><li>rpm –import /etc/pki/rpm-gpg/RPM-GPG-KEY-mesosphere</li></ul></blockquote><p>2、进入3台master服务器安装mesos、marathon和zookeeper</p><blockquote><ul><li>yum install mesos marathon mesosphere-zookeeper -y</li></ul></blockquote><p>3、进入3台slave服务器安装mesos</p><blockquote><ul><li>yum install mesos -y</li></ul></blockquote><p>##配置mesos、zookeeper</p><p>###配置zookeeper<br>1、修改/var/lib/zookeeper/myid文件，三台master服务器，分别设置为1、2、3<br>2、修改/etc/zookeeper/conf/zoo.cfg文件，在文件末尾添加以下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.1=192.168.32.131:2888:3888</span><br><span class="line">server.2=192.168.32.132:2888:3888</span><br><span class="line">server.3=192.168.32.133:2888:3888</span><br></pre></td></tr></table></figure></p><p>3、启动zookeeper服务</p><blockquote><ul><li>systemctl start zookeeper</li></ul></blockquote><p>4、查看zookeeper服务是否已启动</p><blockquote><ul><li>systemctl is-active zookeeper</li></ul></blockquote><p>###配置mesos-master<br>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p><p>2、设置/etc/mesos-master/quorum文件中quorum的值，这个值要大于master数量的1/2，我们这里设置为2<br>3、停用mesos-slave</p><blockquote><ul><li>systemctl stop mesos-slave.service</li><li>systemctl disable mesos-slave.service</li></ul></blockquote><p>4、启动mesos-master marathon</p><blockquote><ul><li>systemctl start mesos-master</li><li>marathon –master zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</li></ul></blockquote><p>正常情况下此时已经可以通过<a href="http://docker1.nd.com:5050打开mesos页面" target="_blank" rel="noopener">http://docker1.nd.com:5050打开mesos页面</a></p><p>###配置mesos-slave<br>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p><p>2、停用mesos-master</p><blockquote><ul><li>systemctl stop mesos-master.service</li><li>systemctl disable mesos-master.service</li></ul></blockquote><p>3、启动mesos-slave</p><blockquote><ul><li>systemctl start mesos-slave</li></ul></blockquote><p>##docker配置<br>如需要在slave上运行docker，除docker自身安装配置外，还需要做如下设置<br>1、指定使用docker容器化</p><blockquote><ul><li>echo ‘docker,mesos’ &gt; /etc/mesos-slave/containerizers</li></ul></blockquote><p>2、考虑到拉取容器镜像等的操作，适当增加timeout的时间</p><blockquote><ul><li>echo ‘5mins’ &gt; /etc/mesos-slave/executor_registration_timeout</li></ul></blockquote><p>3、重启mesos-slave以使上面配置生效</p><blockquote><ul><li>systemctl restart mesos-slave</li></ul></blockquote>]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+      
+      
+        &lt;p&gt;#搭建mesos集群&lt;br&gt;本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：&lt;br&gt;|服务器ip|hostname|说明|&lt;br&gt;|—-|—-|—-|&lt;br&gt;|192.168.32.131|docker1.nd.com|master|&lt;
+      
     
     </summary>
     
