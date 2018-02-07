@@ -86,12 +86,16 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://wangzx.org/index.html">
+<meta name="description" content="本次搭建使用centos7.1，共搭建1台master，2台minion，ip分配如下：    服务器ip hostname 说明     192.168.32.140 salt-master master   192.168.32.141 salt-minion1 minion   192.168.32.142 salt-minion2 minion    服务器基础设置关闭防火墙12# sys">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos7搭建salt master&#x2F;minion环境！">
+<meta property="og:url" content="http://wangzx.org/2018/02/07/salt-install/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本次搭建使用centos7.1，共搭建1台master，2台minion，ip分配如下：    服务器ip hostname 说明     192.168.32.140 salt-master master   192.168.32.141 salt-minion1 minion   192.168.32.142 salt-minion2 minion    服务器基础设置关闭防火墙12# sys">
+<meta property="og:updated_time" content="2018-02-07T06:37:50.662Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="centos7搭建salt master&#x2F;minion环境！">
+<meta name="twitter:description" content="本次搭建使用centos7.1，共搭建1台master，2台minion，ip分配如下：    服务器ip hostname 说明     192.168.32.140 salt-master master   192.168.32.141 salt-minion1 minion   192.168.32.142 salt-minion2 minion    服务器基础设置关闭防火墙12# sys">
 
 
 
@@ -121,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://wangzx.org/"/>
+  <link rel="canonical" href="http://wangzx.org/2018/02/07/salt-install/"/>
 
 
 
 
 
-  <title>Hexo</title>
+  <title>centos7搭建salt master/minion环境！ | Hexo</title>
   
 
 
@@ -146,8 +150,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -220,9 +223,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -252,9 +255,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/07/salt-install/" itemprop="url">centos7搭建salt master/minion环境！</a></h1>
+          <h1 class="post-title" itemprop="name headline">centos7搭建salt master/minion环境！</h1>
         
 
         <div class="post-meta">
@@ -302,6 +303,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/07/salt-install/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/02/07/salt-install/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -326,9 +337,7 @@
       
 
       
-        
-          
-            <p>本次搭建使用centos7.1，共搭建1台master，2台minion，ip分配如下：</p>
+        <p>本次搭建使用centos7.1，共搭建1台master，2台minion，ip分配如下：</p>
 <table>
 <thead>
 <tr>
@@ -376,8 +385,6 @@
 <h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><h2 id="查看master的key列表"><a href="#查看master的key列表" class="headerlink" title="查看master的key列表"></a>查看master的key列表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# salt-key -L</span><br><span class="line">Accepted Keys:（接受的key）</span><br><span class="line">salt-minion1</span><br><span class="line">salt-minion2</span><br><span class="line">Denied Keys:（否认的key）</span><br><span class="line">Unaccepted Keys:（未接受的key）</span><br><span class="line">Rejected Keys:（拒绝的key）</span><br></pre></td></tr></table></figure>
 <h2 id="salt-key常用参数说明："><a href="#salt-key常用参数说明：" class="headerlink" title="salt-key常用参数说明："></a>salt-key常用参数说明：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-L 列出当前所有认证，包括Accepted Keys、Denied Keys、Unaccepted Keys、Rejected Keys</span><br><span class="line">-a 添加某个或某些个未接受(Unaccepted Keys)认证</span><br><span class="line">-A 添加所有未接受(Unaccepted Keys)认证</span><br><span class="line">-d 删除某个或某些个已接受(Accepted Keys)认证</span><br><span class="line">-D 删除所有已接受(Accepted Keys)认证</span><br><span class="line">-y 使用该参数可免去证书操作的交互，除非对minion端很信任，一般不建议使用</span><br><span class="line">-h 帮助</span><br></pre></td></tr></table></figure>
 <h2 id="test-ping"><a href="#test-ping" class="headerlink" title="test.ping"></a>test.ping</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# salt &apos;*&apos; test.ping</span><br><span class="line">salt-minion1:</span><br><span class="line">True</span><br><span class="line">salt-minion2:</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
-          
-        
       
     </div>
     
@@ -394,221 +401,28 @@
       
 
       
-
-      
-
       
       
-        <div class="post-eof"></div>
+
       
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/01/09/mesos-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/09/mesos-install/" itemprop="url">搭建mesos集群！</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-09T19:08:36+08:00">
-                2018-01-09
-              </time>
+              <a href="/2018/01/09/mesos-install/" rel="next" title="搭建mesos集群！">
+                <i class="fa fa-chevron-left"></i> 搭建mesos集群！
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/后端/" itemprop="url" rel="index">
-                    <span itemprop="name">后端</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">服务器ip</th>
-<th style="text-align:left">hostname</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">192.168.32.131</td>
-<td style="text-align:left">docker1.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.132</td>
-<td style="text-align:left">docker2.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.133</td>
-<td style="text-align:left">docker3.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.134</td>
-<td style="text-align:left">docker4.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.135</td>
-<td style="text-align:left">docker5.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.136</td>
-<td style="text-align:left">docker6.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h1 id="服务器基础设置"><a href="#服务器基础设置" class="headerlink" title="服务器基础设置"></a>服务器基础设置</h1><h2 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># systemctl stop firewalld</span><br><span class="line"># systemctl diasble firewalld</span><br></pre></td></tr></table></figure>
-<h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># setenforce 0</span><br><span class="line"># vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
-<p>将第6行修改为SELINUX=permissive<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># This file controls the state of SELinux on the system.</span><br><span class="line"># SELINUX= can take one of these three values:</span><br><span class="line">#     enforcing - SELinux security policy is enforced.</span><br><span class="line">#     permissive - SELinux prints warnings instead of enforcing.</span><br><span class="line">#     disabled - No SELinux policy is loaded.</span><br><span class="line">SELINUX=permissive</span><br><span class="line"># SELINUXTYPE= can take one of three two values:</span><br><span class="line">#     targeted - Targeted processes are protected,</span><br><span class="line">#     minimum - Modification of targeted policy. Only selected processes are protected.</span><br><span class="line">#     mls - Multi Level Security protection.</span><br><span class="line">SELINUXTYPE=targeted</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置hostname"><a href="#设置hostname" class="headerlink" title="设置hostname"></a>设置hostname</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># hostnamectl set-hostname salt-master</span><br></pre></td></tr></table></figure>
-<h2 id="修改host文件"><a href="#修改host文件" class="headerlink" title="修改host文件"></a>修改host文件</h2><p>修改/etc/hosts文件为如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.168.32.131 docker1.nd.com</span><br><span class="line">192.168.32.132 docker2.nd.com</span><br><span class="line">192.168.32.133 docker3.nd.com</span><br><span class="line">192.168.32.134 docker4.nd.com</span><br><span class="line">192.168.32.135 docker5.nd.com</span><br><span class="line">192.168.32.136 docker6.nd.com</span><br></pre></td></tr></table></figure></p>
-<p>使用scp命令复制到其他5台服务器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># scp /etc/hosts root@docker2.nd.com:/etc/hosts</span><br></pre></td></tr></table></figure></p>
-<h1 id="安装mesos、zookeeper包"><a href="#安装mesos、zookeeper包" class="headerlink" title="安装mesos、zookeeper包"></a>安装mesos、zookeeper包</h1><p> 1、分别在6台服务器上执行如下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm</span><br><span class="line"># rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-mesosphere</span><br></pre></td></tr></table></figure></p>
-<p>2、进入3台master服务器安装mesos、marathon和zookeeper<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># yum install mesos marathon mesosphere-zookeeper -y</span><br></pre></td></tr></table></figure></p>
-<p>3、进入3台slave服务器安装mesos<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># yum install mesos -y</span><br></pre></td></tr></table></figure></p>
-<h1 id="配置mesos、zookeeper"><a href="#配置mesos、zookeeper" class="headerlink" title="配置mesos、zookeeper"></a>配置mesos、zookeeper</h1><h2 id="配置zookeeper"><a href="#配置zookeeper" class="headerlink" title="配置zookeeper"></a>配置zookeeper</h2><p>1、修改/var/lib/zookeeper/myid文件，三台master服务器，分别设置为1、2、3<br>2、修改/etc/zookeeper/conf/zoo.cfg文件，在文件末尾添加以下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.1=192.168.32.131:2888:3888</span><br><span class="line">server.2=192.168.32.132:2888:3888</span><br><span class="line">server.3=192.168.32.133:2888:3888</span><br></pre></td></tr></table></figure></p>
-<p>3、启动zookeeper服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#systemctl start zookeeper</span><br></pre></td></tr></table></figure></p>
-<p>4、查看zookeeper服务是否已启动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl is-active zookeeper</span><br></pre></td></tr></table></figure>
-<h2 id="配置mesos-master"><a href="#配置mesos-master" class="headerlink" title="配置mesos-master"></a>配置mesos-master</h2><p>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>2、设置/etc/mesos-master/quorum文件中quorum的值，这个值要大于master数量的1/2，我们这里设置为2<br>3、停用mesos-slave<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl stop mesos-slave.service</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl disable mesos-slave.service</span><br></pre></td></tr></table></figure>
-<p>4、启动mesos-master marathon<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># systemctl start mesos-master</span><br><span class="line"># marathon --master zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>正常情况下此时已经可以通过<a href="http://docker1.nd.com:5050打开mesos页面" target="_blank" rel="noopener">http://docker1.nd.com:5050打开mesos页面</a></p>
-<h2 id="配置mesos-slave"><a href="#配置mesos-slave" class="headerlink" title="配置mesos-slave"></a>配置mesos-slave</h2><p>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>2、停用mesos-master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># systemctl stop mesos-master.service</span><br><span class="line"># systemctl disable mesos-master.service</span><br></pre></td></tr></table></figure></p>
-<p>3、启动mesos-slave<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl start mesos-slave</span><br></pre></td></tr></table></figure></p>
-<h1 id="docker配置"><a href="#docker配置" class="headerlink" title="docker配置"></a>docker配置</h1><p>如需要在slave上运行docker，除docker自身安装配置外，还需要做如下设置<br>1、指定使用docker容器化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># echo &apos;docker,mesos&apos; &gt; /etc/mesos-slave/containerizers</span><br></pre></td></tr></table></figure></p>
-<p>2、考虑到拉取容器镜像等的操作，适当增加timeout的时间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># echo &apos;5mins&apos; &gt; /etc/mesos-slave/executor_registration_timeout</span><br></pre></td></tr></table></figure></p>
-<p>3、重启mesos-slave以使上面配置生效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl restart mesos-slave</span><br></pre></td></tr></table></figure></p>
-<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><p>在测试环境中我们可以关闭防火墙，但在生产环境中，为了安全考虑，还是需要将防火墙开启<br>此时应注意，master需要向agent的所有ip开放5050端口，所有agent需要向master开放5051端口<br>并且为了用户可以访问mesos的前端页面，master需向用户ip开放5050端口，所有agent也需要向用户ip开放5051端口，否则会出现agent信息无法查看，task日志无法查看等问题</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -618,10 +432,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -629,6 +444,17 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -649,8 +475,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -710,6 +545,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器基础设置"><span class="nav-number">1.</span> <span class="nav-text">服务器基础设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭防火墙"><span class="nav-number">1.1.</span> <span class="nav-text">关闭防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭selinux"><span class="nav-number">1.1.1.</span> <span class="nav-text">关闭selinux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置hostname"><span class="nav-number">1.2.</span> <span class="nav-text">设置hostname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改host文件"><span class="nav-number">1.3.</span> <span class="nav-text">修改host文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备，依赖解决"><span class="nav-number">2.</span> <span class="nav-text">环境准备，依赖解决</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始安装"><span class="nav-number">3.</span> <span class="nav-text">开始安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#salt-master安装"><span class="nav-number">3.1.</span> <span class="nav-text">salt-master安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#salt-minion安装"><span class="nav-number">3.2.</span> <span class="nav-text">salt-minion安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置-amp-启动"><span class="nav-number">4.</span> <span class="nav-text">配置&amp;启动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#master配置"><span class="nav-number">4.1.</span> <span class="nav-text">master配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#minion配置"><span class="nav-number">4.2.</span> <span class="nav-text">minion配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试"><span class="nav-number">5.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看master的key列表"><span class="nav-number">5.1.</span> <span class="nav-text">查看master的key列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#salt-key常用参数说明："><span class="nav-number">5.2.</span> <span class="nav-text">salt-key常用参数说明：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test-ping"><span class="nav-number">5.3.</span> <span class="nav-text">test.ping</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -843,6 +694,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
@@ -889,6 +744,30 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'gggfniw',
+            repo: 'gggfniw.github.io',
+            
+            lang: "zh-Hans" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'd747e55675e3a85da023b93e9b078f1ab05275d6',
+            
+                client_id: '421936780ee8d59cc0af'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
     
 
 
