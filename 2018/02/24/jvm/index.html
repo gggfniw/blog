@@ -86,17 +86,17 @@
 
 
 
-<meta name="description" content="内存结构堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
+<meta name="description" content="内存结构 堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java内存结构与垃圾回收">
 <meta property="og:url" content="http://wangzx.org/2018/02/24/jvm/index.html">
 <meta property="og:site_name" content="王志兴的个人博客">
-<meta property="og:description" content="内存结构堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
+<meta property="og:description" content="内存结构 堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-24T11:19:11.544Z">
+<meta property="og:updated_time" content="2018-02-24T11:20:37.613Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java内存结构与垃圾回收">
-<meta name="twitter:description" content="内存结构堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
+<meta name="twitter:description" content="内存结构 堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
 
 
 
@@ -392,22 +392,28 @@
       
 
       
-        <h1 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h1><h2 id="堆内存（线程共享）"><a href="#堆内存（线程共享）" class="headerlink" title="堆内存（线程共享）"></a>堆内存（线程共享）</h2><ul>
+        <h1 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h1><ul>
+<li><h2 id="堆内存（线程共享）"><a href="#堆内存（线程共享）" class="headerlink" title="堆内存（线程共享）"></a>堆内存（线程共享）</h2></li>
 <li><h4 id="新生代"><a href="#新生代" class="headerlink" title="新生代"></a>新生代</h4>新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1</li>
 <li><h6 id="Eden"><a href="#Eden" class="headerlink" title="Eden"></a>Eden</h6>新创建的对象优先放入Eden区域</li>
 </ul>
 <p><strong><a id="more"></a></strong></p>
 <ul>
 <li><h6 id="Suvider"><a href="#Suvider" class="headerlink" title="Suvider"></a>Suvider</h6>Survivor区域有两块，进行一次垃圾回收后，Eden中存活的对象，被复制到Survivor区域中</li>
-<li><h4 id="老年代"><a href="#老年代" class="headerlink" title="老年代"></a>老年代</h4>长期存活的对象放入老年代</li>
-</ul>
-<h2 id="方法区（线程共享）"><a href="#方法区（线程共享）" class="headerlink" title="方法区（线程共享）"></a>方法区（线程共享）</h2><p>用于存储已被加载的类信息，常量，静态变量，即使编译器编译后的代码数据等</p>
-<h2 id="虚拟机栈（线程独享）"><a href="#虚拟机栈（线程独享）" class="headerlink" title="虚拟机栈（线程独享）"></a>虚拟机栈（线程独享）</h2><p>每个方法执行时，都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息，栈帧伴随着方法的执行而入栈，随着方法的结束而出栈</p>
-<h2 id="本地方法栈（线程独享）"><a href="#本地方法栈（线程独享）" class="headerlink" title="本地方法栈（线程独享）"></a>本地方法栈（线程独享）</h2><p>功能类似于虚拟机栈，只是这部分内存由native方法使用</p>
-<h2 id="程序计数器（线程独享）"><a href="#程序计数器（线程独享）" class="headerlink" title="程序计数器（线程独享）"></a>程序计数器（线程独享）</h2><p>用于记录方法执行的行号，如果执行native方法，则无法记录行号，这是内存中唯一一块不会出现OOM的区域</p>
+<li><h4 id="老年代"><a href="#老年代" class="headerlink" title="老年代"></a>老年代</h4><p>长期存活的对象放入老年代</p>
+</li>
+<li><h2 id="方法区（线程共享）"><a href="#方法区（线程共享）" class="headerlink" title="方法区（线程共享）"></a>方法区（线程共享）</h2><p>用于存储已被加载的类信息，常量，静态变量，即使编译器编译后的代码数据等</p>
+</li>
+<li><h2 id="虚拟机栈（线程独享）"><a href="#虚拟机栈（线程独享）" class="headerlink" title="虚拟机栈（线程独享）"></a>虚拟机栈（线程独享）</h2><p>每个方法执行时，都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息，栈帧伴随着方法的执行而入栈，随着方法的结束而出栈</p>
+</li>
+<li><h2 id="本地方法栈（线程独享）"><a href="#本地方法栈（线程独享）" class="headerlink" title="本地方法栈（线程独享）"></a>本地方法栈（线程独享）</h2><p>功能类似于虚拟机栈，只是这部分内存由native方法使用</p>
+</li>
+<li><h2 id="程序计数器（线程独享）"><a href="#程序计数器（线程独享）" class="headerlink" title="程序计数器（线程独享）"></a>程序计数器（线程独享）</h2><p>用于记录方法执行的行号，如果执行native方法，则无法记录行号，这是内存中唯一一块不会出现OOM的区域</p>
 <h1 id="如何判断对象为垃圾对象"><a href="#如何判断对象为垃圾对象" class="headerlink" title="如何判断对象为垃圾对象"></a>如何判断对象为垃圾对象</h1><h2 id="1、引用计数法"><a href="#1、引用计数法" class="headerlink" title="1、引用计数法"></a>1、引用计数法</h2><p>添加一个引用计数器，当对象被引用时+1，解除引用时-1，当值为0时，即为垃圾对象，但由于这种算法，无法回收相互引用的对象，因此很少jvm采用这种算法</p>
 <h2 id="2、可达性分析法"><a href="#2、可达性分析法" class="headerlink" title="2、可达性分析法"></a>2、可达性分析法</h2><p>从GCRoot向下搜索，所走过的路径，称之为引用链，都为有用的对象，否则即为垃圾对象</p>
 <h4 id="可作为GCroot的节点："><a href="#可作为GCroot的节点：" class="headerlink" title="可作为GCroot的节点："></a>可作为GCroot的节点：</h4><p>全局性的引用（常量或静态类的引用）与执行上下文（栈帧中的本地变量表）</p>
+</li>
+</ul>
 <h4 id="GC停顿"><a href="#GC停顿" class="headerlink" title="GC停顿"></a>GC停顿</h4><p>在枚举根节点时，不能出现对象的引用关系还在不断发生变化的情况，因此造成GC进行时，必须停止所有的线程，Sun将这件事称之为“Stop The World”，即使在号称几乎不会发生停顿的CMS（并发标记收集）收集器中，枚举根节点时也必须要停顿</p>
 <h1 id="如何回收"><a href="#如何回收" class="headerlink" title="如何回收"></a>如何回收</h1><h2 id="1、回收策略"><a href="#1、回收策略" class="headerlink" title="1、回收策略"></a>1、回收策略</h2><ul>
 <li><h3 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h3>当对象被确认为垃圾对象之后，就会被标记为垃圾对象，标记的位置，在对象的header中，标记清除算法的两个缺点：1、效率不高 2、空间问题，不连续，后续创建大对象时寻址困难</li>

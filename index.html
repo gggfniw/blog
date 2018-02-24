@@ -382,7 +382,8 @@
 
       
         
-          <h1 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h1><h2 id="堆内存（线程共享）"><a href="#堆内存（线程共享）" class="headerlink" title="堆内存（线程共享）"></a>堆内存（线程共享）</h2><ul>
+          <h1 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h1><ul>
+<li><h2 id="堆内存（线程共享）"><a href="#堆内存（线程共享）" class="headerlink" title="堆内存（线程共享）"></a>堆内存（线程共享）</h2></li>
 <li><h4 id="新生代"><a href="#新生代" class="headerlink" title="新生代"></a>新生代</h4>新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1</li>
 <li><h6 id="Eden"><a href="#Eden" class="headerlink" title="Eden"></a>Eden</h6>新创建的对象优先放入Eden区域</li>
 </ul>
