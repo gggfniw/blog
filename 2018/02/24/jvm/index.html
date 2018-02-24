@@ -93,7 +93,7 @@
 <meta property="og:site_name" content="王志兴的个人博客">
 <meta property="og:description" content="内存结构堆内存（线程共享） 新生代  新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1  Eden  新创建的对象优先放入Eden区域">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-24T11:35:06.909Z">
+<meta property="og:updated_time" content="2018-02-24T11:35:40.668Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java内存结构与垃圾回收">
 <meta name="twitter:description" content="内存结构堆内存（线程共享） 新生代  新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1  Eden  新创建的对象优先放入Eden区域">
@@ -410,9 +410,7 @@
 </ul>
 <p>长期存活的对象放入老年代</p>
 <h2 id="方法区（线程共享）"><a href="#方法区（线程共享）" class="headerlink" title="方法区（线程共享）"></a>方法区（线程共享）</h2><p>用于存储已被加载的类信息，常量，静态变量，即使编译器编译后的代码数据等</p>
-<ul>
-<li><h2 id="虚拟机栈（线程独享）"><a href="#虚拟机栈（线程独享）" class="headerlink" title="虚拟机栈（线程独享）"></a>虚拟机栈（线程独享）</h2>每个方法执行时，都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息，栈帧伴随着方法的执行而入栈，随着方法的结束而出栈</li>
-</ul>
+<h2 id="虚拟机栈（线程独享）"><a href="#虚拟机栈（线程独享）" class="headerlink" title="虚拟机栈（线程独享）"></a>虚拟机栈（线程独享）</h2><p>每个方法执行时，都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息，栈帧伴随着方法的执行而入栈，随着方法的结束而出栈</p>
 <h2 id="本地方法栈（线程独享）"><a href="#本地方法栈（线程独享）" class="headerlink" title="本地方法栈（线程独享）"></a>本地方法栈（线程独享）</h2><p>功能类似于虚拟机栈，只是这部分内存由native方法使用</p>
 <h2 id="程序计数器（线程独享）"><a href="#程序计数器（线程独享）" class="headerlink" title="程序计数器（线程独享）"></a>程序计数器（线程独享）</h2><p>用于记录方法执行的行号，如果执行native方法，则无法记录行号，这是内存中唯一一块不会出现OOM的区域</p>
 <h1 id="如何判断对象为垃圾对象"><a href="#如何判断对象为垃圾对象" class="headerlink" title="如何判断对象为垃圾对象"></a>如何判断对象为垃圾对象</h1><h2 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h2><p>添加一个引用计数器，当对象被引用时+1，解除引用时-1，当值为0时，即为垃圾对象，但由于这种算法，无法回收相互引用的对象，因此很少jvm采用这种算法</p>
