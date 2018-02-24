@@ -93,7 +93,7 @@
 <meta property="og:site_name" content="王志兴的个人博客">
 <meta property="og:description" content="内存结构堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-24T11:17:16.892Z">
+<meta property="og:updated_time" content="2018-02-24T11:19:11.544Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java内存结构与垃圾回收">
 <meta name="twitter:description" content="内存结构堆内存（线程共享） 新生代新创建的对象放入新生代，由于新生代的对象，大部分是朝生夕死，为了更好的垃圾回收，大多数垃圾收集器都采用复制算法，但由于最初的复制算法，将内存一分为二，浪费了50%的内存，因此后来将新生代内存划分为1块Eden区域和两块Survivor区域，默认的比例为8：1：1 Eden新创建的对象优先放入Eden区域">
@@ -413,7 +413,9 @@
 <li><h3 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h3>当对象被确认为垃圾对象之后，就会被标记为垃圾对象，标记的位置，在对象的header中，标记清除算法的两个缺点：1、效率不高 2、空间问题，不连续，后续创建大对象时寻址困难</li>
 <li><h3 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h3>将堆内存分为两块区域，当创建对象时，仅仅使用其中一块区域，当进行垃圾回收时，不再是清除那些被标记为垃圾的对象，而是将没有被标记为垃圾的对象，复制到另一块内存区域，然后将原来那块区域清空，这样很好的解决了标记-清除算法的空间问题，但同时引入了一个新问题，就是内存的浪费，将一块内存分为相等的两块内存，意味着浪费了50%的空间，为此，IBM公司的一个专项研究表明，新生代内存中，98%的对象都是朝生夕死，因此不需要按照1：1来分配内存，而是将内存划分为1块较大的Eden空间和两块较小的Survivor空间，具体的比例为8：1：1，在垃圾回收时，Eden区域和其中一块Surivor区域中还存活的对象，一次性被复制到另一块Surivivor空间上，然后清理掉Eden和刚刚那块Surivivor空间，如果遇到大对象，Surivivor空间不够放时，将进行空间分配担保，将对象放入老年代</li>
 <li><h3 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h3>复制算法更适合新生代，但对于老年代，对象存活率比较高，无法采用复制算法，因此有人想出标记-整理算法，整个过程也分为两步，标记和整理，标记过程与标记清楚算法无异，但是标记完成后并没有马上清除，而是将所有存活的对象向内存的其中一端移动，然后再清理掉另一端的内存</li>
-<li><h3 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h3>当前主流的垃圾收集器都采用此算法，但这种算法并没有特别的思想，只是针对不同的区域，进行不同的算法，比如新生代采用复制算法，老年代采用标记-清除或标记-整理算法<h2 id="2、垃圾收集器"><a href="#2、垃圾收集器" class="headerlink" title="2、垃圾收集器"></a>2、垃圾收集器</h2></li>
+<li><h3 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h3>当前主流的垃圾收集器都采用此算法，但这种算法并没有特别的思想，只是针对不同的区域，进行不同的算法，比如新生代采用复制算法，老年代采用标记-清除或标记-整理算法</li>
+</ul>
+<h2 id="2、垃圾收集器"><a href="#2、垃圾收集器" class="headerlink" title="2、垃圾收集器"></a>2、垃圾收集器</h2><ul>
 <li><h3 id="Serial"><a href="#Serial" class="headerlink" title="Serial"></a>Serial</h3>最早的垃圾收集器，使用单线程收集垃圾，收集效率低下，无法利用多核Cpu的资源，但是现在Client模式的jvm，仍然默认使用这个收集器。</li>
 <li><h3 id="Parnew"><a href="#Parnew" class="headerlink" title="Parnew"></a>Parnew</h3>是Serial的多线程版本，能充分利用多核cpu的资源，另一个重要的原因是能与CMS收集器配合使用</li>
 <li><h3 id="Cms"><a href="#Cms" class="headerlink" title="Cms"></a>Cms</h3>并发标记清除垃圾收集器，能使GC产生的停顿时间减小到最小，除了枚举根节点，会产生GC停顿之外，其他的都能并发执行</li>
@@ -429,11 +431,7 @@
 <li><h5 id="69085K-gt-8704K-78656K"><a href="#69085K-gt-8704K-78656K" class="headerlink" title="69085K-&gt;8704K(78656K)"></a>69085K-&gt;8704K(78656K)</h5>69085K代表本区域GC前的内存大小，8704K代表本区域GC后的内存大小，(78656K)代表本区域总内存大小</li>
 <li><h5 id="69085K-gt-64309K-253440K"><a href="#69085K-gt-64309K-253440K" class="headerlink" title="69085K-&gt;64309K(253440K)"></a>69085K-&gt;64309K(253440K)</h5>69085K代表堆内存GC前的内存大小，64309K代表堆内存GC后的内存大小，(253440K)代表堆内存的总大小<h1 id="内存的创建"><a href="#内存的创建" class="headerlink" title="内存的创建"></a>内存的创建</h1><h2 id="内存分配策略"><a href="#内存分配策略" class="headerlink" title="内存分配策略"></a>内存分配策略</h2></li>
 <li><h3 id="优先分配到eden"><a href="#优先分配到eden" class="headerlink" title="优先分配到eden"></a>优先分配到eden</h3>Eden区域新生代中的一块区域，也是垃圾收集器最常光顾的地方，新创建对象默认放置这个区域。</li>
-<li><h3 id="大对象直接分配到老年代"><a href="#大对象直接分配到老年代" class="headerlink" title="大对象直接分配到老年代"></a>大对象直接分配到老年代</h3>由于在Eden区域中，一般使用复制算法进行垃圾清理，并且次数非常频繁，大对象在频繁但复制过程中性能低下，因此放到老年代中，gc次数相对较少，并且也并不使用复制算法，以提高性能。</li>
-</ul>
-<hr>
-<p>问题：什么叫大对象<br>答：大对象的标准会根据内存环境自动计算得出，也可以使用-XX:PretenureSizeThreshold=10M,指定大于10Mb的对象叫大对象。</p>
-<ul>
+<li><h3 id="大对象直接分配到老年代"><a href="#大对象直接分配到老年代" class="headerlink" title="大对象直接分配到老年代"></a>大对象直接分配到老年代</h3>由于在Eden区域中，一般使用复制算法进行垃圾清理，并且次数非常频繁，大对象在频繁但复制过程中性能低下，因此放到老年代中，gc次数相对较少，并且也并不使用复制算法，以提高性能。大对象的标准会根据内存环境自动计算得出，也可以使用-XX:PretenureSizeThreshold=10M,指定大于10Mb的对象叫大对象。</li>
 <li><h3 id="长期存活到对象分配到老年代"><a href="#长期存活到对象分配到老年代" class="headerlink" title="长期存活到对象分配到老年代"></a>长期存活到对象分配到老年代</h3>每一次的垃圾回收之后，都会给对象的年龄+1，当年龄达到某个值当时候，即称之为长期存活，进入老年代。我们可以使用-XX:MaxTenuringThreshshold=10,指定age达到10的时候进入老年代，默认值为15</li>
 <li><h3 id="空间分配担保"><a href="#空间分配担保" class="headerlink" title="空间分配担保"></a>空间分配担保</h3></li>
 <li><h3 id="动态对象年龄判断"><a href="#动态对象年龄判断" class="headerlink" title="动态对象年龄判断"></a>动态对象年龄判断</h3>并非所有对象都需要到达MaxTenuringThreshshold指定的分代年龄之后才会进入老年代，但Survivor区域中，所有相同年龄的对象内存总和，大于Survivor的一半，即会进入老年代，不受MaxTenuringThreshshold的限制</li>
