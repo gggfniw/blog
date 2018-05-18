@@ -86,17 +86,17 @@
 
 
 
-<meta name="description" content="Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。">
+<meta name="description" content="protocol 远程调用层：封装 RPC 调用，以 Invocation, Result 为中心，扩展接口为 Protocol, Invoker, Exporter">
 <meta property="og:type" content="article">
-<meta property="og:title" content="centos7搭建mesos集群">
-<meta property="og:url" content="http://wangzx.org/2018/01/09/mesos-install/index.html">
+<meta property="og:title" content="《dubbo源码深度解析》之protocol 远程调用层">
+<meta property="og:url" content="http://wangzx.org/2018/05/08/dubbo-protocol/index.html">
 <meta property="og:site_name" content="王志兴的个人博客">
-<meta property="og:description" content="Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。">
+<meta property="og:description" content="protocol 远程调用层：封装 RPC 调用，以 Invocation, Result 为中心，扩展接口为 Protocol, Invoker, Exporter">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-09T02:32:37.856Z">
+<meta property="og:updated_time" content="2018-05-18T08:21:10.007Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="centos7搭建mesos集群">
-<meta name="twitter:description" content="Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。">
+<meta name="twitter:title" content="《dubbo源码深度解析》之protocol 远程调用层">
+<meta name="twitter:description" content="protocol 远程调用层：封装 RPC 调用，以 Invocation, Result 为中心，扩展接口为 Protocol, Invoker, Exporter">
 
 
 
@@ -126,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://wangzx.org/2018/01/09/mesos-install/"/>
+  <link rel="canonical" href="http://wangzx.org/2018/05/08/dubbo-protocol/"/>
 
 
 
 
 
-  <title>centos7搭建mesos集群 | 王志兴的个人博客</title>
+  <title>《dubbo源码深度解析》之protocol 远程调用层 | 王志兴的个人博客</title>
   
 
 
@@ -293,7 +293,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/01/09/mesos-install/">
+    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/05/08/dubbo-protocol/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王志兴">
@@ -310,7 +310,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">centos7搭建mesos集群</h1>
+          <h1 class="post-title" itemprop="name headline">《dubbo源码深度解析》之protocol 远程调用层</h1>
         
 
         <div class="post-meta">
@@ -322,8 +322,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-09T19:08:36+08:00">
-                2018-01-09
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-08T21:10:15+08:00">
+                2018-05-08
               </time>
             
 
@@ -345,8 +345,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维/" itemprop="url" rel="index">
-                    <span itemprop="name">运维</span>
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
                   </a>
                 </span>
 
@@ -363,8 +363,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/09/mesos-install/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/01/09/mesos-install/" itemprop="commentsCount"></span>
+                <a href="/2018/05/08/dubbo-protocol/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/05/08/dubbo-protocol/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -392,75 +392,18 @@
       
 
       
-        <p>Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。</p>
+        <p>protocol 远程调用层：封装 RPC 调用，以 Invocation, Result 为中心，扩展接口为 Protocol, Invoker, Exporter</p>
 <p><strong><a id="more"></a></strong></p>
-<p>本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">服务器ip</th>
-<th style="text-align:left">hostname</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">192.168.32.131</td>
-<td style="text-align:left">docker1.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.132</td>
-<td style="text-align:left">docker2.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.133</td>
-<td style="text-align:left">docker3.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.134</td>
-<td style="text-align:left">docker4.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.135</td>
-<td style="text-align:left">docker5.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.136</td>
-<td style="text-align:left">docker6.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-</tbody>
-</table>
-<h1 id="服务器基础设置"><a href="#服务器基础设置" class="headerlink" title="服务器基础设置"></a>服务器基础设置</h1><h2 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl stop firewalld</span><br><span class="line">$ systemctl disable firewalld</span><br></pre></td></tr></table></figure>
-<h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ setenforce 0</span><br><span class="line">$ vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
-<p>将第6行修改为SELINUX=permissive<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># This file controls the state of SELinux on the system.</span><br><span class="line"># SELINUX= can take one of these three values:</span><br><span class="line">#     enforcing - SELinux security policy is enforced.</span><br><span class="line">#     permissive - SELinux prints warnings instead of enforcing.</span><br><span class="line">#     disabled - No SELinux policy is loaded.</span><br><span class="line">SELINUX=permissive</span><br><span class="line"># SELINUXTYPE= can take one of three two values:</span><br><span class="line">#     targeted - Targeted processes are protected,</span><br><span class="line">#     minimum - Modification of targeted policy. Only selected processes are protected.</span><br><span class="line">#     mls - Multi Level Security protection.</span><br><span class="line">SELINUXTYPE=targeted</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置hostname"><a href="#设置hostname" class="headerlink" title="设置hostname"></a>设置hostname</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hostnamectl set-hostname docker1.nd.com</span><br></pre></td></tr></table></figure>
-<h2 id="修改host文件"><a href="#修改host文件" class="headerlink" title="修改host文件"></a>修改host文件</h2><p>修改/etc/hosts文件为如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.168.32.131 docker1.nd.com</span><br><span class="line">192.168.32.132 docker2.nd.com</span><br><span class="line">192.168.32.133 docker3.nd.com</span><br><span class="line">192.168.32.134 docker4.nd.com</span><br><span class="line">192.168.32.135 docker5.nd.com</span><br><span class="line">192.168.32.136 docker6.nd.com</span><br></pre></td></tr></table></figure></p>
-<p>使用scp命令复制到其他5台服务器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ scp /etc/hosts root@docker2.nd.com:/etc/hosts</span><br></pre></td></tr></table></figure></p>
-<h1 id="安装mesos、zookeeper包"><a href="#安装mesos、zookeeper包" class="headerlink" title="安装mesos、zookeeper包"></a>安装mesos、zookeeper包</h1><p> 1、分别在6台服务器上执行如下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm</span><br><span class="line">$ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-mesosphere</span><br></pre></td></tr></table></figure></p>
-<p>2、进入3台master服务器安装mesos、marathon和zookeeper<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install mesos marathon mesosphere-zookeeper -y</span><br></pre></td></tr></table></figure></p>
-<p>3、进入3台slave服务器安装mesos<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install mesos -y</span><br></pre></td></tr></table></figure></p>
-<h1 id="配置mesos、zookeeper"><a href="#配置mesos、zookeeper" class="headerlink" title="配置mesos、zookeeper"></a>配置mesos、zookeeper</h1><h2 id="配置zookeeper"><a href="#配置zookeeper" class="headerlink" title="配置zookeeper"></a>配置zookeeper</h2><p>1、修改/var/lib/zookeeper/myid文件，三台master服务器，分别设置为1、2、3<br>2、修改/etc/zookeeper/conf/zoo.cfg文件，在文件末尾添加以下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.1=192.168.32.131:2888:3888</span><br><span class="line">server.2=192.168.32.132:2888:3888</span><br><span class="line">server.3=192.168.32.133:2888:3888</span><br></pre></td></tr></table></figure></p>
-<p>3、启动zookeeper服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl start zookeeper</span><br></pre></td></tr></table></figure></p>
-<p>4、查看zookeeper服务是否已启动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl is-active zookeeper</span><br></pre></td></tr></table></figure>
-<h2 id="配置mesos-master"><a href="#配置mesos-master" class="headerlink" title="配置mesos-master"></a>配置mesos-master</h2><p>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>2、设置/etc/mesos-master/quorum文件中quorum的值，这个值要大于master数量的1/2，我们这里设置为2<br>3、停用mesos-slave<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl stop mesos-slave.service</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl disable mesos-slave.service</span><br></pre></td></tr></table></figure>
-<p>4、启动mesos-master marathon<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl start mesos-master</span><br><span class="line">$ marathon --master zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>正常情况下此时已经可以通过<a href="http://docker1.nd.com:5050打开mesos页面" target="_blank" rel="noopener">http://docker1.nd.com:5050打开mesos页面</a></p>
-<h2 id="配置mesos-slave"><a href="#配置mesos-slave" class="headerlink" title="配置mesos-slave"></a>配置mesos-slave</h2><p>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>2、停用mesos-master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl stop mesos-master.service</span><br><span class="line">$ systemctl disable mesos-master.service</span><br></pre></td></tr></table></figure></p>
-<p>3、启动mesos-slave<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl start mesos-slave</span><br></pre></td></tr></table></figure></p>
-<h1 id="docker配置"><a href="#docker配置" class="headerlink" title="docker配置"></a>docker配置</h1><p>如需要在slave上运行docker，除docker自身安装配置外，还需要做如下设置<br>1、指定使用docker容器化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;docker,mesos&apos; &gt; /etc/mesos-slave/containerizers</span><br></pre></td></tr></table></figure></p>
-<p>2、考虑到拉取容器镜像等的操作，适当增加timeout的时间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;5mins&apos; &gt; /etc/mesos-slave/executor_registration_timeout</span><br></pre></td></tr></table></figure></p>
-<p>3、重启mesos-slave以使上面配置生效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl restart mesos-slave</span><br></pre></td></tr></table></figure></p>
-<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><p>在测试环境中我们可以关闭防火墙，但在生产环境中，为了安全考虑，还是需要将防火墙开启<br>此时应注意，master需要向agent的所有ip开放5050端口，所有agent需要向master开放5051端口<br>并且为了用户可以访问mesos的前端页面，master需向用户ip开放5050端口，所有agent也需要向用户ip开放5051端口，否则会出现agent信息无法查看，task日志无法查看等问题</p>
+<h1 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">@SPI(&quot;dubbo&quot;)</span><br><span class="line">public interface Protocol &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 获取缺省端口，当用户没有配置端口时使用。</span><br><span class="line">     *</span><br><span class="line">     * @return 缺省端口</span><br><span class="line">     */</span><br><span class="line">    int getDefaultPort();</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 暴露远程服务：&lt;br&gt;</span><br><span class="line">     * 1. 协议在接收请求时，应记录请求来源方地址信息：RpcContext.getContext().setRemoteAddress();&lt;br&gt;</span><br><span class="line">     * 2. export()必须是幂等的，也就是暴露同一个URL的Invoker两次，和暴露一次没有区别。&lt;br&gt;</span><br><span class="line">     * 3. export()传入的Invoker由框架实现并传入，协议不需要关心。&lt;br&gt;</span><br><span class="line">     *</span><br><span class="line">     * @param &lt;T&gt;     服务的类型</span><br><span class="line">     * @param invoker 服务的执行体</span><br><span class="line">     * @return exporter 暴露服务的引用，用于取消暴露</span><br><span class="line">     * @throws RpcException 当暴露服务出错时抛出，比如端口已占用</span><br><span class="line">     */</span><br><span class="line">    @Adaptive</span><br><span class="line">    &lt;T&gt; Exporter&lt;T&gt; export(Invoker&lt;T&gt; invoker) throws RpcException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 引用远程服务：&lt;br&gt;</span><br><span class="line">     * 1. 当用户调用refer()所返回的Invoker对象的invoke()方法时，协议需相应执行同URL远端export()传入的Invoker对象的invoke()方法。&lt;br&gt;</span><br><span class="line">     * 2. refer()返回的Invoker由协议实现，协议通常需要在此Invoker中发送远程请求。&lt;br&gt;</span><br><span class="line">     * 3. 当url中有设置check=false时，连接失败不能抛出异常，并内部自动恢复。&lt;br&gt;</span><br><span class="line">     *</span><br><span class="line">     * @param &lt;T&gt;  服务的类型</span><br><span class="line">     * @param type 服务的类型</span><br><span class="line">     * @param url  远程服务的URL地址</span><br><span class="line">     * @return invoker 服务的本地代理</span><br><span class="line">     * @throws RpcException 当连接服务提供方失败时抛出</span><br><span class="line">     */</span><br><span class="line">    @Adaptive</span><br><span class="line">    &lt;T&gt; Invoker&lt;T&gt; refer(Class&lt;T&gt; type, URL url) throws RpcException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 释放协议：&lt;br&gt;</span><br><span class="line">     * 1. 取消该协议所有已经暴露和引用的服务。&lt;br&gt;</span><br><span class="line">     * 2. 释放协议所占用的所有资源，比如连接和端口。&lt;br&gt;</span><br><span class="line">     * 3. 协议在释放后，依然能暴露和引用新的服务。&lt;br&gt;</span><br><span class="line">     */</span><br><span class="line">    void destroy();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，最主要的两个方法是export和refer，export针对服务端，将Invoker暴露为Exporter，refer方法针对客户端，通过从注册中心获取的url和接口类型，获得到Invoker，通过SPI注解的key可知，默认的实现类是DubboProtocol，先来看下DubboProtocol的export方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T&gt; Exporter&lt;T&gt; export(Invoker&lt;T&gt; invoker) throws RpcException &#123;</span><br><span class="line">    URL url = invoker.getUrl();</span><br><span class="line"></span><br><span class="line">    // export service.</span><br><span class="line">    String key = serviceKey(url);</span><br><span class="line">    DubboExporter&lt;T&gt; exporter = new DubboExporter&lt;T&gt;(invoker, key, exporterMap);</span><br><span class="line">    exporterMap.put(key, exporter);</span><br><span class="line">    //省略代码</span><br><span class="line">    openServer(url);</span><br><span class="line">    return exporter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到暴露的逻辑其实非常简单，从url中抽取出关键参数组装为一个key，如官方demo中的DemoService的key就是com.alibaba.dubbo.demo.DemoService:20880，然后new一个DubboExporter，存入exporterMap中，就完成了暴露，后续在接收到客户端请求时，也是从exporterMap这个对象中查找Exporter，从而进行方法的调用。</p>
+<p>但似乎暴露的逻辑没有那么简单，最后还有一行代码：openServer(url);<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">private void openServer(URL url) &#123;</span><br><span class="line">    // find server.</span><br><span class="line">    String key = url.getAddress();</span><br><span class="line">    //client 也可以暴露一个只有server可以调用的服务。</span><br><span class="line">    boolean isServer = url.getParameter(Constants.IS_SERVER_KEY, true);</span><br><span class="line">    if (isServer) &#123;</span><br><span class="line">        ExchangeServer server = serverMap.get(key);</span><br><span class="line">        if (server == null) &#123;</span><br><span class="line">            serverMap.put(key, createServer(url));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            //server支持reset,配合override功能使用</span><br><span class="line">            server.reset(url);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里有个关键对象serverMap，key是url的地址，如：192.168.252.169:20880，如果serverMap中没有这个key，则调用createServer方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private ExchangeServer createServer(URL url) &#123;</span><br><span class="line">    //默认开启server关闭时发送readonly事件</span><br><span class="line">    url = url.addParameterIfAbsent(Constants.CHANNEL_READONLYEVENT_SENT_KEY, Boolean.TRUE.toString());</span><br><span class="line">    //默认开启heartbeat</span><br><span class="line">    url = url.addParameterIfAbsent(Constants.HEARTBEAT_KEY, String.valueOf(Constants.DEFAULT_HEARTBEAT));</span><br><span class="line">    String str = url.getParameter(Constants.SERVER_KEY, Constants.DEFAULT_REMOTING_SERVER);</span><br><span class="line">    url = url.addParameter(Constants.CODEC_KEY, Version.isCompatibleVersion() ? COMPATIBLE_CODEC_NAME : DubboCodec.NAME);</span><br><span class="line">    ExchangeServer server;</span><br><span class="line">    server = Exchangers.bind(url, requestHandler);</span><br><span class="line">    //省略代码</span><br><span class="line">    return server;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中Exchangers.bind方法将会打开netty端口，这一部分留到Exchangers层进行说明，这里还有一个关键的对象，就是传给Exchangers.bind方法的ExchangeHandler对象，这个对象定义在了DubboProtol类中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() &#123;</span><br><span class="line"></span><br><span class="line">       public Object reply(ExchangeChannel channel, Object message) throws RemotingException &#123;</span><br><span class="line">           if (message instanceof Invocation) &#123;</span><br><span class="line">               Invocation inv = (Invocation) message;</span><br><span class="line">               Invoker&lt;?&gt; invoker = getInvoker(channel, inv);</span><br><span class="line">               //如果是callback 需要处理高版本调用低版本的问题</span><br><span class="line">               if (Boolean.TRUE.toString().equals(inv.getAttachments().get(IS_CALLBACK_SERVICE_INVOKE))) &#123;</span><br><span class="line">                   String methodsStr = invoker.getUrl().getParameters().get(&quot;methods&quot;);</span><br><span class="line">                   boolean hasMethod = false;</span><br><span class="line">                   if (methodsStr == null || methodsStr.indexOf(&quot;,&quot;) == -1) &#123;</span><br><span class="line">                       hasMethod = inv.getMethodName().equals(methodsStr);</span><br><span class="line">                   &#125; else &#123;</span><br><span class="line">                       String[] methods = methodsStr.split(&quot;,&quot;);</span><br><span class="line">                       for (String method : methods) &#123;</span><br><span class="line">                           if (inv.getMethodName().equals(method)) &#123;</span><br><span class="line">                               hasMethod = true;</span><br><span class="line">                               break;</span><br><span class="line">                           &#125;</span><br><span class="line">                       &#125;</span><br><span class="line">                   &#125;</span><br><span class="line">                   if (!hasMethod) &#123;</span><br><span class="line">                       logger.warn(new IllegalStateException(&quot;The methodName &quot; + inv.getMethodName() + &quot; not found in callback service interface ,invoke will be ignored. please update the api interface. url is:&quot; + invoker.getUrl()) + &quot; ,invocation is :&quot; + inv);</span><br><span class="line">                       return null;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">               RpcContext.getContext().setRemoteAddress(channel.getRemoteAddress());</span><br><span class="line">               return invoker.invoke(inv);</span><br><span class="line">           &#125;</span><br><span class="line">           throw new RemotingException(channel, &quot;Unsupported request: &quot; + message == null ? null : (message.getClass().getName() + &quot;: &quot; + message) + &quot;, channel: consumer: &quot; + channel.getRemoteAddress() + &quot; --&gt; provider: &quot; + channel.getLocalAddress());</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       @Override</span><br><span class="line">       public void received(Channel channel, Object message) throws RemotingException &#123;</span><br><span class="line">           if (message instanceof Invocation) &#123;</span><br><span class="line">               reply((ExchangeChannel) channel, message);</span><br><span class="line">           &#125; else &#123;</span><br><span class="line">               super.received(channel, message);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       @Override</span><br><span class="line">       public void connected(Channel channel) throws RemotingException &#123;</span><br><span class="line">           invoke(channel, Constants.ON_CONNECT_KEY);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       @Override</span><br><span class="line">       public void disconnected(Channel channel) throws RemotingException &#123;</span><br><span class="line">           if (logger.isInfoEnabled()) &#123;</span><br><span class="line">               logger.info(&quot;disconected from &quot; + channel.getRemoteAddress() + &quot;,url:&quot; + channel.getUrl());</span><br><span class="line">           &#125;</span><br><span class="line">           invoke(channel, Constants.ON_DISCONNECT_KEY);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       private void invoke(Channel channel, String methodKey) &#123;</span><br><span class="line">           Invocation invocation = createInvocation(channel, channel.getUrl(), methodKey);</span><br><span class="line">           if (invocation != null) &#123;</span><br><span class="line">               try &#123;</span><br><span class="line">                   received(channel, invocation);</span><br><span class="line">               &#125; catch (Throwable t) &#123;</span><br><span class="line">                   logger.warn(&quot;Failed to invoke event method &quot; + invocation.getMethodName() + &quot;(), cause: &quot; + t.getMessage(), t);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       private Invocation createInvocation(Channel channel, URL url, String methodKey) &#123;</span><br><span class="line">           String method = url.getParameter(methodKey);</span><br><span class="line">           if (method == null || method.length() == 0) &#123;</span><br><span class="line">               return null;</span><br><span class="line">           &#125;</span><br><span class="line">           RpcInvocation invocation = new RpcInvocation(method, new Class&lt;?&gt;[0], new Object[0]);</span><br><span class="line">           invocation.setAttachment(Constants.PATH_KEY, url.getPath());</span><br><span class="line">           invocation.setAttachment(Constants.GROUP_KEY, url.getParameter(Constants.GROUP_KEY));</span><br><span class="line">           invocation.setAttachment(Constants.INTERFACE_KEY, url.getParameter(Constants.INTERFACE_KEY));</span><br><span class="line">           invocation.setAttachment(Constants.VERSION_KEY, url.getParameter(Constants.VERSION_KEY));</span><br><span class="line">           if (url.getParameter(Constants.STUB_EVENT_KEY, false)) &#123;</span><br><span class="line">               invocation.setAttachment(Constants.STUB_EVENT_KEY, Boolean.TRUE.toString());</span><br><span class="line">           &#125;</span><br><span class="line">           return invocation;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这个对象非常的重要，在后续netty收到客户端发来的请求时，会回调这个对象中的方法，从而进行方法的调用，具体细节将留到后续讲解服务发布、服务调用的流程时来说明。</p>
+<p>再来看下refer方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T&gt; Invoker&lt;T&gt; refer(Class&lt;T&gt; serviceType, URL url) throws RpcException &#123;</span><br><span class="line">    // create rpc invoker.</span><br><span class="line">    DubboInvoker&lt;T&gt; invoker = new DubboInvoker&lt;T&gt;(serviceType, url, getClients(url), invokers);</span><br><span class="line">    invokers.add(invoker);</span><br><span class="line">    return invoker;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个方法本身非常简单，通过接口类型、url即可组装一个DubboInvoker对象，因此这里本身没什么好讲，倒是生成的DubboInvoker这个对象的doInvoke方法值得深究：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected Result doInvoke(final Invocation invocation) throws Throwable &#123;</span><br><span class="line">    boolean isAsync = RpcUtils.isAsync(getUrl(), invocation);</span><br><span class="line">    boolean isOneway = RpcUtils.isOneway(getUrl(), invocation);</span><br><span class="line">    int timeout = getUrl().getMethodParameter(methodName, Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT);</span><br><span class="line">    if (isOneway) &#123;</span><br><span class="line">        boolean isSent = getUrl().getMethodParameter(methodName, Constants.SENT_KEY, false);</span><br><span class="line">        currentClient.send(inv, isSent);</span><br><span class="line">        RpcContext.getContext().setFuture(null);</span><br><span class="line">        return new RpcResult();</span><br><span class="line">    &#125; else if (isAsync) &#123;</span><br><span class="line">        ResponseFuture future = currentClient.request(inv, timeout);</span><br><span class="line">        RpcContext.getContext().setFuture(new FutureAdapter&lt;Object&gt;(future));</span><br><span class="line">        return new RpcResult();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        RpcContext.getContext().setFuture(null);</span><br><span class="line">        return (Result) currentClient.request(inv, timeout).get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里可以看到三种方法调用的逻辑，分别是：同步调用、异步调用、同步转异步，默认是第三种。但无论是哪种，最终调用的都是ExchangeClient对象的send或request方法，ExchangeClient的具体细节，将在下一节Exchange层进行说明。</p>
 
       
     </div>
@@ -514,14 +457,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/05/05/dubbo-monitor/" rel="next" title="《dubbo源码深度解析》之monitor 监控层">
+                <i class="fa fa-chevron-left"></i> 《dubbo源码深度解析》之monitor 监控层
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/07/salt-install/" rel="prev" title="centos7搭建saltstack">
-                centos7搭建saltstack <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/11/dubbo-exchange/" rel="prev" title="《dubbo源码深度解析》之exchange 信息交换层">
+                《dubbo源码深度解析》之exchange 信息交换层 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -661,7 +608,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器基础设置"><span class="nav-number">1.</span> <span class="nav-text">服务器基础设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭防火墙"><span class="nav-number">1.1.</span> <span class="nav-text">关闭防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭selinux"><span class="nav-number">1.1.1.</span> <span class="nav-text">关闭selinux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置hostname"><span class="nav-number">1.2.</span> <span class="nav-text">设置hostname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改host文件"><span class="nav-number">1.3.</span> <span class="nav-text">修改host文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装mesos、zookeeper包"><span class="nav-number">2.</span> <span class="nav-text">安装mesos、zookeeper包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置mesos、zookeeper"><span class="nav-number">3.</span> <span class="nav-text">配置mesos、zookeeper</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置zookeeper"><span class="nav-number">3.1.</span> <span class="nav-text">配置zookeeper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置mesos-master"><span class="nav-number">3.2.</span> <span class="nav-text">配置mesos-master</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置mesos-slave"><span class="nav-number">3.3.</span> <span class="nav-text">配置mesos-slave</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker配置"><span class="nav-number">4.</span> <span class="nav-text">docker配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注意事项"><span class="nav-number">5.</span> <span class="nav-text">注意事项</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Protocol"><span class="nav-number">1.</span> <span class="nav-text">Protocol</span></a></li></ol></div>
             
 
           </div>

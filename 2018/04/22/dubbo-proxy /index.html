@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java,后端,运维,前端,jvm" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="王志兴的个人博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="proxy层是dubbo架构中的第三层，在dubbo官网中的定义如下：proxy 服务代理层：服务接口透明代理，生成服务的客户端 Stub 和服务器端 Skeleton, 以 ServiceProxy 为中心，扩展接口为 ProxyFactory">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《dubbo源码深度解析》之proxy 服务代理层">
+<meta property="og:url" content="http://wangzx.org/2018/04/22/dubbo-proxy /index.html">
+<meta property="og:site_name" content="王志兴的个人博客">
+<meta property="og:description" content="proxy层是dubbo架构中的第三层，在dubbo官网中的定义如下：proxy 服务代理层：服务接口透明代理，生成服务的客户端 Stub 和服务器端 Skeleton, 以 ServiceProxy 为中心，扩展接口为 ProxyFactory">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-18T08:20:08.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《dubbo源码深度解析》之proxy 服务代理层">
+<meta name="twitter:description" content="proxy层是dubbo架构中的第三层，在dubbo官网中的定义如下：proxy 服务代理层：服务接口透明代理，生成服务的客户端 Stub 和服务器端 Skeleton, 以 ServiceProxy 为中心，扩展接口为 ProxyFactory">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangzx.org/2018/04/22/dubbo-proxy /"/>
+
+
+
+
+
+  <title>《dubbo源码深度解析》之proxy 服务代理层 | 王志兴的个人博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">王志兴的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/04/22/dubbo-proxy /">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王志兴">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="王志兴的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《dubbo源码深度解析》之proxy 服务代理层</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-22T11:54:42+08:00">
+                2018-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/22/dubbo-proxy /#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/04/22/dubbo-proxy /" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>proxy层是dubbo架构中的第三层，在dubbo官网中的定义如下：<br>proxy 服务代理层：服务接口透明代理，生成服务的客户端 Stub 和服务器端 Skeleton, 以 ServiceProxy 为中心，扩展接口为 ProxyFactory<br><strong><a id="more"></a></strong></p>
+<h1 id="ProxyFactory"><a href="#ProxyFactory" class="headerlink" title="ProxyFactory"></a>ProxyFactory</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@SPI(&quot;javassist&quot;)</span><br><span class="line">public interface ProxyFactory &#123;</span><br><span class="line"></span><br><span class="line">    @Adaptive(&#123;Constants.PROXY_KEY&#125;)</span><br><span class="line">    &lt;T&gt; T getProxy(Invoker&lt;T&gt; invoker) throws RpcException;</span><br><span class="line"></span><br><span class="line">    @Adaptive(&#123;Constants.PROXY_KEY&#125;)</span><br><span class="line">    &lt;T&gt; Invoker&lt;T&gt; getInvoker(T proxy, Class&lt;T&gt; type, URL url) throws RpcException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ProxyFactory只有两个方法：getProxy和getInvoker，其中，getProxy针对客户端，参数只有一个：Invoker，Invoker也多次提到，是贯穿dubbo全文的一个可执行对象，getProxy返回的是一个动态代理对象，暂时可以理解为jdk动态代理对象，当然这里不止jdk动态代理一种实现方式。</p>
+<p>getInvoker方法针对服务端，传入的参数有三个：目标接口实现类（DemoServiceImpl）、接口的Class对象、url，通过这三个参数，构造出一个Invoker，通过这个方法也可以看出Invoker对象是一个具备执行能力的对象。</p>
+<p>ProxyFactory的实现类有很多，但扣去包装类，公共父类等，真正的实现类就两个：JdkProxyFactory和JavassistProxyFactory</p>
+<h1 id="JdkProxyFactory"><a href="#JdkProxyFactory" class="headerlink" title="JdkProxyFactory"></a>JdkProxyFactory</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class JdkProxyFactory extends AbstractProxyFactory &#123;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    public &lt;T&gt; T getProxy(Invoker&lt;T&gt; invoker, Class&lt;?&gt;[] interfaces) &#123;</span><br><span class="line">        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces, new InvokerInvocationHandler(invoker));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public &lt;T&gt; Invoker&lt;T&gt; getInvoker(T proxy, Class&lt;T&gt; type, URL url) &#123;</span><br><span class="line">        return new AbstractProxyInvoker&lt;T&gt;(proxy, type, url) &#123;</span><br><span class="line">            @Override</span><br><span class="line">            protected Object doInvoke(T proxy, String methodName,</span><br><span class="line">                                      Class&lt;?&gt;[] parameterTypes,</span><br><span class="line">                                      Object[] arguments) throws Throwable &#123;</span><br><span class="line">                Method method = proxy.getClass().getMethod(methodName, parameterTypes);</span><br><span class="line">                return method.invoke(proxy, arguments);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，getProxy方法就是一个标准的jdk动态代理的实现方式，对jdk动态代理不熟悉的同学可以看我之前的文章：<a href="http://wangzx.org/2018/04/28/jdk-proxy/">http://wangzx.org/2018/04/28/jdk-proxy/</a> ，这里有个关键的类，就是InvokerInvocationHandler，我们来看下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class InvokerInvocationHandler implements InvocationHandler &#123;</span><br><span class="line"></span><br><span class="line">    private final Invoker&lt;?&gt; invoker;</span><br><span class="line"></span><br><span class="line">    public InvokerInvocationHandler(Invoker&lt;?&gt; handler) &#123;</span><br><span class="line">        this.invoker = handler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">        String methodName = method.getName();</span><br><span class="line">        Class&lt;?&gt;[] parameterTypes = method.getParameterTypes();</span><br><span class="line">        if (method.getDeclaringClass() == Object.class) &#123;</span><br><span class="line">            return method.invoke(invoker, args);</span><br><span class="line">        &#125;</span><br><span class="line">        if (&quot;toString&quot;.equals(methodName) &amp;&amp; parameterTypes.length == 0) &#123;</span><br><span class="line">            return invoker.toString();</span><br><span class="line">        &#125;</span><br><span class="line">        if (&quot;hashCode&quot;.equals(methodName) &amp;&amp; parameterTypes.length == 0) &#123;</span><br><span class="line">            return invoker.hashCode();</span><br><span class="line">        &#125;</span><br><span class="line">        if (&quot;equals&quot;.equals(methodName) &amp;&amp; parameterTypes.length == 1) &#123;</span><br><span class="line">            return invoker.equals(args[0]);</span><br><span class="line">        &#125;</span><br><span class="line">        return invoker.invoke(new RpcInvocation(method, args)).recreate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个类也是jdk动态代理的标准实现方式，最终调用的是Invoker的invoke方法，这个方法非常关键，我们在后面再讲。</p>
+<p>然后是getInvoker方法，重申一遍这个方法针对的是服务端，从方法参数中也可以看到这是一个针对服务端的接口，因为参数中包含proxy这个对象，即实现类的对象，只有在服务端中才有实现类，返回的是一个AbstractProxyInvoker对象，这是一个实现了Invoker的抽象类，但在getInvoker方法中，我们好像并没有实现Invoker的invoker方法，而是实现了doInvoke方法，这个怎么回事呢？我们看下AbstractProxyInvoker的invoke方法就能得到答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public Result invoke(Invocation invocation) throws RpcException &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            return new RpcResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));</span><br><span class="line">        &#125; catch (InvocationTargetException e) &#123;</span><br><span class="line">            return new RpcResult(e.getTargetException());</span><br><span class="line">        &#125; catch (Throwable e) &#123;</span><br><span class="line">            throw new RpcException(&quot;Failed to invoke remote proxy method &quot; + invocation.getMethodName() + &quot; to &quot; + getUrl() + &quot;, cause: &quot; + e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>AbstractProxyInvoker将在服务端收到客户端发来的请求后，通过url找到Invoker，然后调用Invoker的invoke方法，然后调用我们重写的doInvoke方法，最终通过jdk反射完成了方法的调用。</p>
+<h1 id="JavassistProxyFactory"><a href="#JavassistProxyFactory" class="headerlink" title="JavassistProxyFactory"></a>JavassistProxyFactory</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class JavassistProxyFactory extends AbstractProxyFactory &#123;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">    public &lt;T&gt; T getProxy(Invoker&lt;T&gt; invoker, Class&lt;?&gt;[] interfaces) &#123;</span><br><span class="line">        return (T) Proxy.getProxy(interfaces).newInstance(new InvokerInvocationHandler(invoker));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public &lt;T&gt; Invoker&lt;T&gt; getInvoker(T proxy, Class&lt;T&gt; type, URL url) &#123;</span><br><span class="line">        // TODO Wrapper类不能正确处理带$的类名</span><br><span class="line">        final Wrapper wrapper = Wrapper.getWrapper(proxy.getClass().getName().indexOf(&apos;$&apos;) &lt; 0 ? proxy.getClass() : type);</span><br><span class="line">        return new AbstractProxyInvoker&lt;T&gt;(proxy, type, url) &#123;</span><br><span class="line">            @Override</span><br><span class="line">            protected Object doInvoke(T proxy, String methodName,</span><br><span class="line">                                      Class&lt;?&gt;[] parameterTypes,</span><br><span class="line">                                      Object[] arguments) throws Throwable &#123;</span><br><span class="line">                return wrapper.invokeMethod(proxy, methodName, parameterTypes, arguments);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>getProxy方法也就一行代码，乍看跟jdk动态代理很像，但其实这里Proxy.getProxy()方法是dubbo自己实现的一套生成动态代理类的逻辑：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public static Proxy getProxy(ClassLoader cl, Class&lt;?&gt;... ics) &#123;</span><br><span class="line">        //省略代码</span><br><span class="line">        String pcn = pkg + &quot;.proxy&quot; + id;</span><br><span class="line">        ccp.setClassName(pcn);</span><br><span class="line">        ccp.addField(&quot;public static java.lang.reflect.Method[] methods;&quot;);</span><br><span class="line">        ccp.addField(&quot;private &quot; + InvocationHandler.class.getName() + &quot; handler;&quot;);</span><br><span class="line">        ccp.addConstructor(Modifier.PUBLIC, new Class&lt;?&gt;[]&#123;InvocationHandler.class&#125;, new Class&lt;?&gt;[0], &quot;handler=$1;&quot;);</span><br><span class="line">        ccp.addDefaultConstructor();</span><br><span class="line">        Class&lt;?&gt; clazz = ccp.toClass();</span><br><span class="line">        clazz.getField(&quot;methods&quot;).set(null, methods.toArray(new Method[0]));</span><br><span class="line"></span><br><span class="line">        // create Proxy class.</span><br><span class="line">        String fcn = Proxy.class.getName() + id;</span><br><span class="line">        ccm = ClassGenerator.newInstance(cl);</span><br><span class="line">        ccm.setClassName(fcn);</span><br><span class="line">        ccm.addDefaultConstructor();</span><br><span class="line">        ccm.setSuperClass(Proxy.class);</span><br><span class="line">        ccm.addMethod(&quot;public Object newInstance(&quot; + InvocationHandler.class.getName() + &quot; h)&#123; return new &quot; + pcn + &quot;($1); &#125;&quot;);</span><br><span class="line">        Class&lt;?&gt; pc = ccm.toClass();</span><br><span class="line">        proxy = (Proxy) pc.newInstance();</span><br><span class="line">        //省略代码</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以大概看出是通过javassist来动态生成类，具体的生成逻辑我们不用他太过关心，倒是可以看下最终生成的类是什么样子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class Proxy0 extends Proxy implements com.alibaba.dubbo.rpc.service.EchoService,com.alibaba.dubbo.demo.DemoService&#123;</span><br><span class="line">    </span><br><span class="line">    public static java.lang.reflect.Method[] methods;</span><br><span class="line">    </span><br><span class="line">    private java.lang.reflect.InvocationHandler handler;</span><br><span class="line">    </span><br><span class="line">    public Proxy0(java.lang.reflect.InvocationHandler arg0)&#123;</span><br><span class="line">        handler=arg0;</span><br><span class="line">    &#125;</span><br><span class="line">    public Object newInstance(InvocationHandler h)&#123;</span><br><span class="line">        return new Proxy0(h);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public java.lang.String sayHello(java.lang.String arg0) throws Throwable &#123;</span><br><span class="line">        Object[] args = new Object[1];</span><br><span class="line">        args[0] = arg0;</span><br><span class="line">        Object ret = handler.invoke(this, methods[0], args);</span><br><span class="line">        return (java.lang.String)ret;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public java.lang.Object $echo(java.lang.Object arg0) throws Throwable &#123;</span><br><span class="line">        Object[] args = new Object[1];</span><br><span class="line">        args[0] = arg0;</span><br><span class="line">        Object ret = handler.invoke(this, methods[1], args);</span><br><span class="line">        return (java.lang.Object)ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个就是代理对象的代码，可以看到在调用sayHello这个方法是，最终调用的其实也是InvocationHandler对象的invoke方法，而InvocationHandler 这个对象，是在newInstance这个方法中传进去的，这里的而InvocationHandler用的和JdkProxyFactory中用的是同一个，所以我们可以近似的认为，在getProxy这个方法上，ProxyFactory的两个实现类的实现，并没有多大差别。</p>
+<p>再看getInvoker方法，返回的依然是个AbstractProxyInvoker对象，但在重新的doInvoke方法中，调用的是Wrapper类的invokeMethod方法，而不是JdkProxyFactory中的用反射调用，这里是多了一个包装类的逻辑，其实这里非常像jdk动态代理和cglib动态代理之间的关系，jdk动态代理在最终方法调用时，是通过反射调用，但cglib在最终方法调用时，是通过一个fastClass机制调用，避免过多使用反射造成性能问题，我们可以来看下这个Wrapper类的生成过程：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">private static Wrapper makeWrapper(Class&lt;?&gt; c) &#123;</span><br><span class="line">        StringBuilder c1 = new StringBuilder(&quot;public void setPropertyValue(Object o, String n, Object v)&#123; &quot;);</span><br><span class="line">        StringBuilder c2 = new StringBuilder(&quot;public Object getPropertyValue(Object o, String n)&#123; &quot;);</span><br><span class="line">        StringBuilder c3 = new StringBuilder(&quot;public Object invokeMethod(Object o, String n, Class[] p, Object[] v) throws &quot; + InvocationTargetException.class.getName() + &quot;&#123; &quot;);</span><br><span class="line"></span><br><span class="line">        c1.append(name).append(&quot; w; try&#123; w = ((&quot;).append(name).append(&quot;)$1); &#125;catch(Throwable e)&#123; throw new IllegalArgumentException(e); &#125;&quot;);</span><br><span class="line">        c2.append(name).append(&quot; w; try&#123; w = ((&quot;).append(name).append(&quot;)$1); &#125;catch(Throwable e)&#123; throw new IllegalArgumentException(e); &#125;&quot;);</span><br><span class="line">        c3.append(name).append(&quot; w; try&#123; w = ((&quot;).append(name).append(&quot;)$1); &#125;catch(Throwable e)&#123; throw new IllegalArgumentException(e); &#125;&quot;);</span><br><span class="line">        c1.append(&quot; throw new &quot; + NoSuchPropertyException.class.getName() + &quot;(\&quot;Not found property \\\&quot;\&quot;+$2+\&quot;\\\&quot; filed or setter method in class &quot; + c.getName() + &quot;.\&quot;); &#125;&quot;);</span><br><span class="line">        c2.append(&quot; throw new &quot; + NoSuchPropertyException.class.getName() + &quot;(\&quot;Not found property \\\&quot;\&quot;+$2+\&quot;\\\&quot; filed or setter method in class &quot; + c.getName() + &quot;.\&quot;); &#125;&quot;);</span><br><span class="line"></span><br><span class="line">        // make class</span><br><span class="line">        long id = WRAPPER_CLASS_COUNTER.getAndIncrement();</span><br><span class="line">        ClassGenerator cc = ClassGenerator.newInstance(cl);</span><br><span class="line">        cc.setClassName((Modifier.isPublic(c.getModifiers()) ? Wrapper.class.getName() : c.getName() + &quot;$sw&quot;) + id);</span><br><span class="line">        cc.setSuperClass(Wrapper.class);</span><br><span class="line"></span><br><span class="line">        cc.addDefaultConstructor();</span><br><span class="line">        cc.addField(&quot;public static String[] pns;&quot;); // property name array.</span><br><span class="line">        cc.addField(&quot;public static &quot; + Map.class.getName() + &quot; pts;&quot;); // property type map.</span><br><span class="line">        cc.addField(&quot;public static String[] mns;&quot;); // all method name array.</span><br><span class="line">        cc.addField(&quot;public static String[] dmns;&quot;); // declared method name array.</span><br><span class="line">        for (int i = 0, len = ms.size(); i &lt; len; i++)</span><br><span class="line">            cc.addField(&quot;public static Class[] mts&quot; + i + &quot;;&quot;);</span><br><span class="line"></span><br><span class="line">        cc.addMethod(&quot;public String[] getPropertyNames()&#123; return pns; &#125;&quot;);</span><br><span class="line">        cc.addMethod(&quot;public boolean hasProperty(String n)&#123; return pts.containsKey($1); &#125;&quot;);</span><br><span class="line">        cc.addMethod(&quot;public Class getPropertyType(String n)&#123; return (Class)pts.get($1); &#125;&quot;);</span><br><span class="line">        cc.addMethod(&quot;public String[] getMethodNames()&#123; return mns; &#125;&quot;);</span><br><span class="line">        cc.addMethod(&quot;public String[] getDeclaredMethodNames()&#123; return dmns; &#125;&quot;);</span><br><span class="line">        //省略代码        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到同样是通过Javassist来动态生成类，与其看生成的逻辑，还不如看下最终生成的类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class Wrapper1 extends Wrapper &#123;</span><br><span class="line"></span><br><span class="line">    //省略代码</span><br><span class="line"></span><br><span class="line">    public Object invokeMethod(Object o, String n, Class[] p, Object[] v) throws java.lang.reflect.InvocationTargetException&#123;</span><br><span class="line">        com.alibaba.dubbo.demo.provider.DemoServiceImpl w;</span><br><span class="line">        try&#123;</span><br><span class="line">            w = ((com.alibaba.dubbo.demo.provider.DemoServiceImpl)o);</span><br><span class="line">        &#125;catch(Throwable e)&#123;</span><br><span class="line">            throw new IllegalArgumentException(e);</span><br><span class="line">        &#125;</span><br><span class="line">        try&#123;</span><br><span class="line">            if( &quot;sayHello&quot;.equals( n )  &amp;&amp;  p.length == 1 ) &#123;</span><br><span class="line">                return w.sayHello((java.lang.String)v[0]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch(Throwable e) &#123;</span><br><span class="line">            throw new java.lang.reflect.InvocationTargetException(e);</span><br><span class="line">        &#125;</span><br><span class="line">        throw new com.alibaba.dubbo.common.bytecode.NoSuchMethodException(&quot;Not found method \&quot;&quot;+n+&quot;\&quot; in class com.alibaba.dubbo.demo.provider.DemoServiceImpl.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到这里是通过直接调用的方式来调用目标方法，相比于JdkProxyFactory的反射调用，直接调用能带来更大的性能提升，因此JavassistProxyFactory也是dubbo的默认配置。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="http://oxje1v37b.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.png" alt="王志兴 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="http://oxje1v37b.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E4%BA%8C%E7%BB%B4%E7%A0%81.png" alt="王志兴 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/18/dubbo-config/" rel="next" title="《dubbo源码深度解析》之config配置层">
+                <i class="fa fa-chevron-left"></i> 《dubbo源码深度解析》之config配置层
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/26/dubbo-registry /" rel="prev" title="《dubbo源码深度解析》之registry 注册中心层">
+                《dubbo源码深度解析》之registry 注册中心层 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">王志兴</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ProxyFactory"><span class="nav-number">1.</span> <span class="nav-text">ProxyFactory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JdkProxyFactory"><span class="nav-number">2.</span> <span class="nav-text">JdkProxyFactory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JavassistProxyFactory"><span class="nav-number">3.</span> <span class="nav-text">JavassistProxyFactory</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">王志兴</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'gggfniw',
+            repo: 'gggfniw.github.io',
+            
+            lang: "zh-Hans" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'd747e55675e3a85da023b93e9b078f1ab05275d6',
+            
+                client_id: '421936780ee8d59cc0af'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

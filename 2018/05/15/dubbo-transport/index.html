@@ -86,17 +86,17 @@
 
 
 
-<meta name="description" content="Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。">
+<meta name="description" content="transport 网络传输层：抽象 mina 和 netty 为统一接口，以 Message 为中心，扩展接口为 Channel, Transporter, Client, Server, Codec">
 <meta property="og:type" content="article">
-<meta property="og:title" content="centos7搭建mesos集群">
-<meta property="og:url" content="http://wangzx.org/2018/01/09/mesos-install/index.html">
+<meta property="og:title" content="《dubbo源码深度解析》之transport 网络传输层">
+<meta property="og:url" content="http://wangzx.org/2018/05/15/dubbo-transport/index.html">
 <meta property="og:site_name" content="王志兴的个人博客">
-<meta property="og:description" content="Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。">
+<meta property="og:description" content="transport 网络传输层：抽象 mina 和 netty 为统一接口，以 Message 为中心，扩展接口为 Channel, Transporter, Client, Server, Codec">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-09T02:32:37.856Z">
+<meta property="og:updated_time" content="2018-05-18T08:21:51.941Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="centos7搭建mesos集群">
-<meta name="twitter:description" content="Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。">
+<meta name="twitter:title" content="《dubbo源码深度解析》之transport 网络传输层">
+<meta name="twitter:description" content="transport 网络传输层：抽象 mina 和 netty 为统一接口，以 Message 为中心，扩展接口为 Channel, Transporter, Client, Server, Codec">
 
 
 
@@ -126,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://wangzx.org/2018/01/09/mesos-install/"/>
+  <link rel="canonical" href="http://wangzx.org/2018/05/15/dubbo-transport/"/>
 
 
 
 
 
-  <title>centos7搭建mesos集群 | 王志兴的个人博客</title>
+  <title>《dubbo源码深度解析》之transport 网络传输层 | 王志兴的个人博客</title>
   
 
 
@@ -293,7 +293,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/01/09/mesos-install/">
+    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/05/15/dubbo-transport/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王志兴">
@@ -310,7 +310,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">centos7搭建mesos集群</h1>
+          <h1 class="post-title" itemprop="name headline">《dubbo源码深度解析》之transport 网络传输层</h1>
         
 
         <div class="post-meta">
@@ -322,8 +322,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-09T19:08:36+08:00">
-                2018-01-09
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-15T21:55:42+08:00">
+                2018-05-15
               </time>
             
 
@@ -345,8 +345,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维/" itemprop="url" rel="index">
-                    <span itemprop="name">运维</span>
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
                   </a>
                 </span>
 
@@ -363,8 +363,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/09/mesos-install/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/01/09/mesos-install/" itemprop="commentsCount"></span>
+                <a href="/2018/05/15/dubbo-transport/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/05/15/dubbo-transport/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -392,75 +392,19 @@
       
 
       
-        <p>Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。</p>
+        <p>transport 网络传输层：抽象 mina 和 netty 为统一接口，以 Message 为中心，扩展接口为 Channel, Transporter, Client, Server, Codec</p>
 <p><strong><a id="more"></a></strong></p>
-<p>本次搭建使用centos7.1，共搭建3台master，3台slave，ip分配如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">服务器ip</th>
-<th style="text-align:left">hostname</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">192.168.32.131</td>
-<td style="text-align:left">docker1.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.132</td>
-<td style="text-align:left">docker2.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.133</td>
-<td style="text-align:left">docker3.nd.com</td>
-<td style="text-align:left">master</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.134</td>
-<td style="text-align:left">docker4.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.135</td>
-<td style="text-align:left">docker5.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-<tr>
-<td style="text-align:left">192.168.32.136</td>
-<td style="text-align:left">docker6.nd.com</td>
-<td style="text-align:left">slave</td>
-</tr>
-</tbody>
-</table>
-<h1 id="服务器基础设置"><a href="#服务器基础设置" class="headerlink" title="服务器基础设置"></a>服务器基础设置</h1><h2 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl stop firewalld</span><br><span class="line">$ systemctl disable firewalld</span><br></pre></td></tr></table></figure>
-<h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ setenforce 0</span><br><span class="line">$ vi /etc/selinux/config</span><br></pre></td></tr></table></figure>
-<p>将第6行修改为SELINUX=permissive<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># This file controls the state of SELinux on the system.</span><br><span class="line"># SELINUX= can take one of these three values:</span><br><span class="line">#     enforcing - SELinux security policy is enforced.</span><br><span class="line">#     permissive - SELinux prints warnings instead of enforcing.</span><br><span class="line">#     disabled - No SELinux policy is loaded.</span><br><span class="line">SELINUX=permissive</span><br><span class="line"># SELINUXTYPE= can take one of three two values:</span><br><span class="line">#     targeted - Targeted processes are protected,</span><br><span class="line">#     minimum - Modification of targeted policy. Only selected processes are protected.</span><br><span class="line">#     mls - Multi Level Security protection.</span><br><span class="line">SELINUXTYPE=targeted</span><br></pre></td></tr></table></figure></p>
-<h2 id="设置hostname"><a href="#设置hostname" class="headerlink" title="设置hostname"></a>设置hostname</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hostnamectl set-hostname docker1.nd.com</span><br></pre></td></tr></table></figure>
-<h2 id="修改host文件"><a href="#修改host文件" class="headerlink" title="修改host文件"></a>修改host文件</h2><p>修改/etc/hosts文件为如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.168.32.131 docker1.nd.com</span><br><span class="line">192.168.32.132 docker2.nd.com</span><br><span class="line">192.168.32.133 docker3.nd.com</span><br><span class="line">192.168.32.134 docker4.nd.com</span><br><span class="line">192.168.32.135 docker5.nd.com</span><br><span class="line">192.168.32.136 docker6.nd.com</span><br></pre></td></tr></table></figure></p>
-<p>使用scp命令复制到其他5台服务器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ scp /etc/hosts root@docker2.nd.com:/etc/hosts</span><br></pre></td></tr></table></figure></p>
-<h1 id="安装mesos、zookeeper包"><a href="#安装mesos、zookeeper包" class="headerlink" title="安装mesos、zookeeper包"></a>安装mesos、zookeeper包</h1><p> 1、分别在6台服务器上执行如下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm</span><br><span class="line">$ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-mesosphere</span><br></pre></td></tr></table></figure></p>
-<p>2、进入3台master服务器安装mesos、marathon和zookeeper<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install mesos marathon mesosphere-zookeeper -y</span><br></pre></td></tr></table></figure></p>
-<p>3、进入3台slave服务器安装mesos<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install mesos -y</span><br></pre></td></tr></table></figure></p>
-<h1 id="配置mesos、zookeeper"><a href="#配置mesos、zookeeper" class="headerlink" title="配置mesos、zookeeper"></a>配置mesos、zookeeper</h1><h2 id="配置zookeeper"><a href="#配置zookeeper" class="headerlink" title="配置zookeeper"></a>配置zookeeper</h2><p>1、修改/var/lib/zookeeper/myid文件，三台master服务器，分别设置为1、2、3<br>2、修改/etc/zookeeper/conf/zoo.cfg文件，在文件末尾添加以下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.1=192.168.32.131:2888:3888</span><br><span class="line">server.2=192.168.32.132:2888:3888</span><br><span class="line">server.3=192.168.32.133:2888:3888</span><br></pre></td></tr></table></figure></p>
-<p>3、启动zookeeper服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl start zookeeper</span><br></pre></td></tr></table></figure></p>
-<p>4、查看zookeeper服务是否已启动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl is-active zookeeper</span><br></pre></td></tr></table></figure>
-<h2 id="配置mesos-master"><a href="#配置mesos-master" class="headerlink" title="配置mesos-master"></a>配置mesos-master</h2><p>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>2、设置/etc/mesos-master/quorum文件中quorum的值，这个值要大于master数量的1/2，我们这里设置为2<br>3、停用mesos-slave<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl stop mesos-slave.service</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl disable mesos-slave.service</span><br></pre></td></tr></table></figure>
-<p>4、启动mesos-master marathon<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl start mesos-master</span><br><span class="line">$ marathon --master zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>正常情况下此时已经可以通过<a href="http://docker1.nd.com:5050打开mesos页面" target="_blank" rel="noopener">http://docker1.nd.com:5050打开mesos页面</a></p>
-<h2 id="配置mesos-slave"><a href="#配置mesos-slave" class="headerlink" title="配置mesos-slave"></a>配置mesos-slave</h2><p>1、在/etc/mesos 和 /etc/marathon/conf目录下，新建文件：zk，添加如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zk://192.168.32.131:2181,192.168.32.132:2181,192.168.32.133:2181/mesos</span><br></pre></td></tr></table></figure></p>
-<p>2、停用mesos-master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl stop mesos-master.service</span><br><span class="line">$ systemctl disable mesos-master.service</span><br></pre></td></tr></table></figure></p>
-<p>3、启动mesos-slave<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl start mesos-slave</span><br></pre></td></tr></table></figure></p>
-<h1 id="docker配置"><a href="#docker配置" class="headerlink" title="docker配置"></a>docker配置</h1><p>如需要在slave上运行docker，除docker自身安装配置外，还需要做如下设置<br>1、指定使用docker容器化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;docker,mesos&apos; &gt; /etc/mesos-slave/containerizers</span><br></pre></td></tr></table></figure></p>
-<p>2、考虑到拉取容器镜像等的操作，适当增加timeout的时间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;5mins&apos; &gt; /etc/mesos-slave/executor_registration_timeout</span><br></pre></td></tr></table></figure></p>
-<p>3、重启mesos-slave以使上面配置生效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl restart mesos-slave</span><br></pre></td></tr></table></figure></p>
-<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><p>在测试环境中我们可以关闭防火墙，但在生产环境中，为了安全考虑，还是需要将防火墙开启<br>此时应注意，master需要向agent的所有ip开放5050端口，所有agent需要向master开放5051端口<br>并且为了用户可以访问mesos的前端页面，master需向用户ip开放5050端口，所有agent也需要向用户ip开放5051端口，否则会出现agent信息无法查看，task日志无法查看等问题</p>
+<h1 id="Transporter"><a href="#Transporter" class="headerlink" title="Transporter"></a>Transporter</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">@SPI(&quot;netty&quot;)</span><br><span class="line">public interface Transporter &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Bind a server.</span><br><span class="line">     *</span><br><span class="line">     * @param url     server url</span><br><span class="line">     * @param handler</span><br><span class="line">     * @return server</span><br><span class="line">     * @throws RemotingException</span><br><span class="line">     * @see com.alibaba.dubbo.remoting.Transporters#bind(URL, Receiver, ChannelHandler)</span><br><span class="line">     */</span><br><span class="line">    @Adaptive(&#123;Constants.SERVER_KEY, Constants.TRANSPORTER_KEY&#125;)</span><br><span class="line">    Server bind(URL url, ChannelHandler handler) throws RemotingException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Connect to a server.</span><br><span class="line">     *</span><br><span class="line">     * @param url     server url</span><br><span class="line">     * @param handler</span><br><span class="line">     * @return client</span><br><span class="line">     * @throws RemotingException</span><br><span class="line">     * @see com.alibaba.dubbo.remoting.Transporters#connect(URL, Receiver, ChannelListener)</span><br><span class="line">     */</span><br><span class="line">    @Adaptive(&#123;Constants.CLIENT_KEY, Constants.TRANSPORTER_KEY&#125;)</span><br><span class="line">    Client connect(URL url, ChannelHandler handler) throws RemotingException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个接口和Exchange非常像，甚至连接口和接口里面的参数都差不多，其实Exchange本身就是对Transporter进一步的封装，真正干活的，是这个Transporter，我们来看下这个接口的实现类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GrizzlyTransporter (com.alibaba.dubbo.remoting.transport.grizzly) </span><br><span class="line">MinaTransporter (com.alibaba.dubbo.remoting.transport.mina) </span><br><span class="line">NettyTransporter (com.alibaba.dubbo.remoting.transport.netty)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到dubbo底层支持Grizzly、Mina、Netty作为网络传输层，默认使用的是netty，我们来看下NettyTransporter的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class NettyTransporter implements Transporter &#123;</span><br><span class="line"></span><br><span class="line">    public static final String NAME = &quot;netty&quot;;</span><br><span class="line"></span><br><span class="line">    public Server bind(URL url, ChannelHandler listener) throws RemotingException &#123;</span><br><span class="line">        return new NettyServer(url, listener);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Client connect(URL url, ChannelHandler listener) throws RemotingException &#123;</span><br><span class="line">        return new NettyClient(url, listener);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p>先来看bind方法，返回的是一个NettyServer，在这个类中有个非常眼熟的方法：doOpen：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected void doOpen() throws Throwable &#123;</span><br><span class="line">    NettyHelper.setNettyLoggerFactory();</span><br><span class="line">    ExecutorService boss = Executors.newCachedThreadPool(new NamedThreadFactory(&quot;NettyServerBoss&quot;, true));</span><br><span class="line">    ExecutorService worker = Executors.newCachedThreadPool(new NamedThreadFactory(&quot;NettyServerWorker&quot;, true));</span><br><span class="line">    ChannelFactory channelFactory = new NioServerSocketChannelFactory(boss, worker, getUrl().getPositiveParameter(Constants.IO_THREADS_KEY, Constants.DEFAULT_IO_THREADS));</span><br><span class="line">    bootstrap = new ServerBootstrap(channelFactory);</span><br><span class="line"></span><br><span class="line">    final NettyHandler nettyHandler = new NettyHandler(getUrl(), this);</span><br><span class="line">    channels = nettyHandler.getChannels();</span><br><span class="line">    // https://issues.jboss.org/browse/NETTY-365</span><br><span class="line">    // https://issues.jboss.org/browse/NETTY-379</span><br><span class="line">    // final Timer timer = new HashedWheelTimer(new NamedThreadFactory(&quot;NettyIdleTimer&quot;, true));</span><br><span class="line">    bootstrap.setPipelineFactory(new ChannelPipelineFactory() &#123;</span><br><span class="line">        public ChannelPipeline getPipeline() &#123;</span><br><span class="line">            NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(), getUrl(), NettyServer.this);</span><br><span class="line">            ChannelPipeline pipeline = Channels.pipeline();</span><br><span class="line">            /*int idleTimeout = getIdleTimeout();</span><br><span class="line">            if (idleTimeout &gt; 10000) &#123;</span><br><span class="line">                pipeline.addLast(&quot;timer&quot;, new IdleStateHandler(timer, idleTimeout / 1000, 0, 0));</span><br><span class="line">            &#125;*/</span><br><span class="line">            pipeline.addLast(&quot;decoder&quot;, adapter.getDecoder());</span><br><span class="line">            pipeline.addLast(&quot;encoder&quot;, adapter.getEncoder());</span><br><span class="line">            pipeline.addLast(&quot;handler&quot;, nettyHandler);</span><br><span class="line">            return pipeline;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    // bind</span><br><span class="line">    channel = bootstrap.bind(getBindAddress());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到这里几乎都是netty的代码，我们先来看下duOpen方法在什么时候被调用，再来看doOpen方法中的几个关键的对象，可以看到NettyServer继承了AbstractServer，在这个父类的构造方法中，调用了doOpen方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public AbstractServer(URL url, ChannelHandler handler) throws RemotingException &#123;</span><br><span class="line">    super(url, handler);</span><br><span class="line">    localAddress = getUrl().toInetSocketAddress();</span><br><span class="line">    String host = url.getParameter(Constants.ANYHOST_KEY, false)</span><br><span class="line">            || NetUtils.isInvalidLocalHost(getUrl().getHost())</span><br><span class="line">            ? NetUtils.ANYHOST : getUrl().getHost();</span><br><span class="line">    bindAddress = new InetSocketAddress(host, getUrl().getPort());</span><br><span class="line">    this.accepts = url.getParameter(Constants.ACCEPTS_KEY, Constants.DEFAULT_ACCEPTS);</span><br><span class="line">    this.idleTimeout = url.getParameter(Constants.IDLE_TIMEOUT_KEY, Constants.DEFAULT_IDLE_TIMEOUT);</span><br><span class="line">    try &#123;</span><br><span class="line">        doOpen();</span><br><span class="line">        if (logger.isInfoEnabled()) &#123;</span><br><span class="line">            logger.info(&quot;Start &quot; + getClass().getSimpleName() + &quot; bind &quot; + getBindAddress() + &quot;, export &quot; + getLocalAddress());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (Throwable t) &#123;</span><br><span class="line">        throw new RemotingException(url.toInetSocketAddress(), null, &quot;Failed to bind &quot; + getClass().getSimpleName()</span><br><span class="line">                + &quot; on &quot; + getLocalAddress() + &quot;, cause: &quot; + t.getMessage(), t);</span><br><span class="line">    &#125;</span><br><span class="line">    //fixme replace this with better method</span><br><span class="line">    DataStore dataStore = ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension();</span><br><span class="line">    executor = (ExecutorService) dataStore.get(Constants.EXECUTOR_SERVICE_COMPONENT_KEY, Integer.toString(url.getPort()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>现在再来看doOpen方法中的几个关键对象，第一个就是nettyHandler这个对象，可以看到这个对象是通过new NettyHandler(getUrl(), this)产生的，来看下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">public class NettyHandler extends SimpleChannelHandler &#123;</span><br><span class="line"></span><br><span class="line">    private final Map&lt;String, Channel&gt; channels = new ConcurrentHashMap&lt;String, Channel&gt;(); // &lt;ip:port, channel&gt;</span><br><span class="line"></span><br><span class="line">    private final URL url;</span><br><span class="line"></span><br><span class="line">    private final ChannelHandler handler;</span><br><span class="line"></span><br><span class="line">    public NettyHandler(URL url, ChannelHandler handler) &#123;</span><br><span class="line">        if (url == null) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;url == null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (handler == null) &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;handler == null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        this.url = url;</span><br><span class="line">        this.handler = handler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //省略部分方法</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception &#123;</span><br><span class="line">        NettyChannel channel = NettyChannel.getOrAddChannel(ctx.getChannel(), url, handler);</span><br><span class="line">        try &#123;</span><br><span class="line">            handler.received(channel, e.getMessage());</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            NettyChannel.removeChannelIfDisconnected(ctx.getChannel());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception &#123;</span><br><span class="line">        super.writeRequested(ctx, e);</span><br><span class="line">        NettyChannel channel = NettyChannel.getOrAddChannel(ctx.getChannel(), url, handler);</span><br><span class="line">        try &#123;</span><br><span class="line">            handler.sent(channel, e.getMessage());</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            NettyChannel.removeChannelIfDisconnected(ctx.getChannel());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    //省略部分方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个对象继承SimpleChannelHandler，这里是netty的内容，不再赘述，倒是我们观察到，这个类的每个方法体，都是调用了handler的对应方法进行处理，那这个handler是什么东西呢？其实这个handler就是在DubboProtol中定义的，通过层层的参数传递，传到了NettyServer的父类AbstractPeer中，AbstractPeer也实现了ChannelHandler方法。</p>
+<p>第二个关键的对象，是netty的编码器和解码器，dubbo为了避免粘包和拆包问题，自己定义了一套编解码规则，这部分的内容，将在讲解dubbo编解码时说明</p>
+<h2 id="connect"><a href="#connect" class="headerlink" title="connect"></a>connect</h2><p>再来看Transporter的connect方法，还是以NettyTransporter为例，NettyTransporter的connect方法中new了一个NettyClient，NettyClient的doOpen方法几乎也是netty的代码，关键对象也和NettyServer一致，因此这里不再说明，倒是NettyClient在doOpen之后，还进行了一次connect操作，连上netty服务端：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">protected void doConnect() throws Throwable &#123;</span><br><span class="line">    ChannelFuture future = bootstrap.connect(getConnectAddress());</span><br><span class="line">    try &#123;</span><br><span class="line">        Channel newChannel = future.getChannel();</span><br><span class="line">        newChannel.setInterestOps(Channel.OP_READ_WRITE);</span><br><span class="line">        NettyClient.this.channel = newChannel;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (!isConnected()) &#123;</span><br><span class="line">            future.cancel();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>代码做了精简，但最终其实就是将从netty中获取的channel赋值到NettyClient的成员变量channel中，以供后续的消息发送使用，消息发送，也是NettyClient关键的一个部分，也是在讲解Exchange中遗留的问题，在NettyClient的父类AbstractClient中，有个send方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void send(Object message, boolean sent) throws RemotingException &#123;</span><br><span class="line">    if (send_reconnect &amp;&amp; !isConnected()) &#123;</span><br><span class="line">        connect();</span><br><span class="line">    &#125;</span><br><span class="line">    Channel channel = getChannel();</span><br><span class="line">    //TODO getChannel返回的状态是否包含null需要改进</span><br><span class="line">    if (channel == null || !channel.isConnected()) &#123;</span><br><span class="line">        throw new RemotingException(this, &quot;message can not send, because channel is closed . url:&quot; + getUrl());</span><br><span class="line">    &#125;</span><br><span class="line">    channel.send(message, sent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里调用了getChannel();方法，其实返回的，就是刚刚讲的channel对象，通过这个对象，可以请求netty发送数据给服务端。</p>
 
       
     </div>
@@ -514,14 +458,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/05/11/dubbo-exchange/" rel="next" title="《dubbo源码深度解析》之exchange 信息交换层">
+                <i class="fa fa-chevron-left"></i> 《dubbo源码深度解析》之exchange 信息交换层
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/07/salt-install/" rel="prev" title="centos7搭建saltstack">
-                centos7搭建saltstack <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/16/dubbo-/" rel="prev" title="《dubbo源码深度解析》之">
+                《dubbo源码深度解析》之 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -661,7 +609,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器基础设置"><span class="nav-number">1.</span> <span class="nav-text">服务器基础设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭防火墙"><span class="nav-number">1.1.</span> <span class="nav-text">关闭防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭selinux"><span class="nav-number">1.1.1.</span> <span class="nav-text">关闭selinux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置hostname"><span class="nav-number">1.2.</span> <span class="nav-text">设置hostname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改host文件"><span class="nav-number">1.3.</span> <span class="nav-text">修改host文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装mesos、zookeeper包"><span class="nav-number">2.</span> <span class="nav-text">安装mesos、zookeeper包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置mesos、zookeeper"><span class="nav-number">3.</span> <span class="nav-text">配置mesos、zookeeper</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置zookeeper"><span class="nav-number">3.1.</span> <span class="nav-text">配置zookeeper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置mesos-master"><span class="nav-number">3.2.</span> <span class="nav-text">配置mesos-master</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置mesos-slave"><span class="nav-number">3.3.</span> <span class="nav-text">配置mesos-slave</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker配置"><span class="nav-number">4.</span> <span class="nav-text">docker配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注意事项"><span class="nav-number">5.</span> <span class="nav-text">注意事项</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Transporter"><span class="nav-number">1.</span> <span class="nav-text">Transporter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bind"><span class="nav-number">1.1.</span> <span class="nav-text">bind</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#connect"><span class="nav-number">1.2.</span> <span class="nav-text">connect</span></a></li></ol></li></ol></div>
             
 
           </div>

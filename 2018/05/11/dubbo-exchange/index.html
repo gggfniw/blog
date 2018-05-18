@@ -86,13 +86,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="王志兴的个人博客">
-<meta property="og:url" content="http://wangzx.org/archives/2018/04/index.html">
+<meta name="description" content="exchange 信息交换层：封装请求响应模式，同步转异步，以 Request, Response 为中心，扩展接口为 Exchanger, ExchangeChannel, ExchangeClient, ExchangeServer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《dubbo源码深度解析》之exchange 信息交换层">
+<meta property="og:url" content="http://wangzx.org/2018/05/11/dubbo-exchange/index.html">
 <meta property="og:site_name" content="王志兴的个人博客">
+<meta property="og:description" content="exchange 信息交换层：封装请求响应模式，同步转异步，以 Request, Response 为中心，扩展接口为 Exchanger, ExchangeChannel, ExchangeClient, ExchangeServer">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-18T08:21:31.027Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="王志兴的个人博客">
+<meta name="twitter:title" content="《dubbo源码深度解析》之exchange 信息交换层">
+<meta name="twitter:description" content="exchange 信息交换层：封装请求响应模式，同步转异步，以 Request, Response 为中心，扩展接口为 Exchanger, ExchangeChannel, ExchangeClient, ExchangeServer">
 
 
 
@@ -122,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://wangzx.org/archives/2018/04/"/>
+  <link rel="canonical" href="http://wangzx.org/2018/05/11/dubbo-exchange/"/>
 
 
 
 
 
-  <title>归档 | 王志兴的个人博客</title>
+  <title>《dubbo源码深度解析》之exchange 信息交换层 | 王志兴的个人博客</title>
   
 
 
@@ -147,7 +151,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -275,222 +279,216 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangzx.org/2018/05/11/dubbo-exchange/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王志兴">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="王志兴的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">《dubbo源码深度解析》之exchange 信息交换层</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-11T20:33:27+08:00">
+                2018-05-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 16 篇日志。 继续努力。
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
 
-        
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/05/11/dubbo-exchange/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/05/11/dubbo-exchange/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/04/28/jdk-proxy/" itemprop="url">
-              
-                <span itemprop="name">jdk动态代理解析</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-28T15:43:02+08:00"
-              content="2018-04-28" >
-          04-28
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/04/26/dubbo-registry /" itemprop="url">
-              
-                <span itemprop="name">《dubbo源码深度解析》之registry 注册中心层</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-26T18:21:32+08:00"
-              content="2018-04-26" >
-          04-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/04/22/dubbo-proxy /" itemprop="url">
-              
-                <span itemprop="name">《dubbo源码深度解析》之proxy 服务代理层</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-22T11:54:42+08:00"
-              content="2018-04-22" >
-          04-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/04/18/dubbo-config/" itemprop="url">
-              
-                <span itemprop="name">《dubbo源码深度解析》之config配置层</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-18T19:55:29+08:00"
-              content="2018-04-18" >
-          04-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <p>exchange 信息交换层：封装请求响应模式，同步转异步，以 Request, Response 为中心，扩展接口为 Exchanger, ExchangeChannel, ExchangeClient, ExchangeServer<br><strong><a id="more"></a></strong></p>
+<h1 id="Exchanger"><a href="#Exchanger" class="headerlink" title="Exchanger"></a>Exchanger</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@SPI(HeaderExchanger.NAME)</span><br><span class="line">public interface Exchanger &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * bind.</span><br><span class="line">     *</span><br><span class="line">     * @param url</span><br><span class="line">     * @param handler</span><br><span class="line">     * @return message server</span><br><span class="line">     */</span><br><span class="line">    @Adaptive(&#123;Constants.EXCHANGER_KEY&#125;)</span><br><span class="line">    ExchangeServer bind(URL url, ExchangeHandler handler) throws RemotingException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * connect.</span><br><span class="line">     *</span><br><span class="line">     * @param url</span><br><span class="line">     * @param handler</span><br><span class="line">     * @return message channel</span><br><span class="line">     */</span><br><span class="line">    @Adaptive(&#123;Constants.EXCHANGER_KEY&#125;)</span><br><span class="line">    ExchangeClient connect(URL url, ExchangeHandler handler) throws RemotingException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Exchanger接口就两个方法，其中bind方法针对服务端，connect方法针对客户端，bind方法和connect方法都有一个参数：ExchangeHandler，我们来看下这个类：</p>
+<h1 id="ExchangeHandler"><a href="#ExchangeHandler" class="headerlink" title="ExchangeHandler"></a>ExchangeHandler</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public interface ExchangeHandler extends ChannelHandler, TelnetHandler &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * reply.</span><br><span class="line">     *</span><br><span class="line">     * @param channel</span><br><span class="line">     * @param request</span><br><span class="line">     * @return response</span><br><span class="line">     * @throws RemotingException</span><br><span class="line">     */</span><br><span class="line">    Object reply(ExchangeChannel channel, Object request) throws RemotingException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只有一个方法，在Protocol层的DubboProtocol中有一个内部类实现了这个接口，当时在文中也有强调它的重要性，接着看ChannelHandler</p>
+<h1 id="ChannelHandler"><a href="#ChannelHandler" class="headerlink" title="ChannelHandler"></a>ChannelHandler</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">@SPI</span><br><span class="line">public interface ChannelHandler &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * on channel connected.</span><br><span class="line">     *</span><br><span class="line">     * @param channel channel.</span><br><span class="line">     */</span><br><span class="line">    void connected(Channel channel) throws RemotingException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * on channel disconnected.</span><br><span class="line">     *</span><br><span class="line">     * @param channel channel.</span><br><span class="line">     */</span><br><span class="line">    void disconnected(Channel channel) throws RemotingException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * on message sent.</span><br><span class="line">     *</span><br><span class="line">     * @param channel channel.</span><br><span class="line">     * @param message message.</span><br><span class="line">     */</span><br><span class="line">    void sent(Channel channel, Object message) throws RemotingException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * on message received.</span><br><span class="line">     *</span><br><span class="line">     * @param channel channel.</span><br><span class="line">     * @param message message.</span><br><span class="line">     */</span><br><span class="line">    void received(Channel channel, Object message) throws RemotingException;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * on exception caught.</span><br><span class="line">     *</span><br><span class="line">     * @param channel   channel.</span><br><span class="line">     * @param exception exception.</span><br><span class="line">     */</span><br><span class="line">    void caught(Channel channel, Throwable exception) throws RemotingException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>乍看之下，这里的接口非常像netty的接口，实际上dubbo也是借鉴了netty的设计思路，这五个接口，将在收到netty消息的时候被调用。</p>
+<h1 id="ExchangeClient"><a href="#ExchangeClient" class="headerlink" title="ExchangeClient"></a>ExchangeClient</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface ExchangeClient extends Client, ExchangeChannel &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ExchangeClient封装了发送数据的方法，这个接口的父接口比较多，为了不占篇幅，这里不再贴父接口的代码，同学们可以自行查看，其中最重要的两个方法，是send和request。<br>ExchangeClient的实现类比较少，我们来看下HeaderExchangeClient这个实现类的request方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public ResponseFuture request(Object request) throws RemotingException &#123;</span><br><span class="line">    return channel.request(request);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里的channel是HeaderExchangeChannel的对象，在HeaderExchangeClient这个类的构造方法中初始化了这个对象，这个类实现了ExchangeChannel接口，因此也有request方法，我们再来看下这个类的request方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public ResponseFuture request(Object request, int timeout) throws RemotingException &#123;</span><br><span class="line">    // create request.</span><br><span class="line">    Request req = new Request();</span><br><span class="line">    req.setVersion(&quot;2.0.0&quot;);</span><br><span class="line">    req.setTwoWay(true);</span><br><span class="line">    req.setData(request);</span><br><span class="line">    DefaultFuture future = new DefaultFuture(channel, req, timeout);</span><br><span class="line">    try &#123;</span><br><span class="line">        channel.send(req);</span><br><span class="line">    &#125; catch (RemotingException e) &#123;</span><br><span class="line">        future.cancel();</span><br><span class="line">        throw e;</span><br><span class="line">    &#125;</span><br><span class="line">    return future;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里构造了一个Request对象，这个对象中包含了所有与方法调用相关的信息，如方法名、方法参数等，通过channel.send(req)方法发送出去，这里是channel是NettyClient，这也是个非常关键的对象，具体的细节，将在下一节Tranport层进行说明</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/04/15/dubbo-spi/" itemprop="url">
-              
-                <span itemprop="name">《dubbo源码深度解析》之dubbo扩展点加载机制</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-15T15:22:15+08:00"
-              content="2018-04-15" >
-          04-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="http://oxje1v37b.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.png" alt="王志兴 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="http://oxje1v37b.bkt.clouddn.com/%E6%94%AF%E4%BB%98%E5%AE%9D%E4%BA%8C%E7%BB%B4%E7%A0%81.png" alt="王志兴 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/08/dubbo-protocol/" rel="next" title="《dubbo源码深度解析》之protocol 远程调用层">
+                <i class="fa fa-chevron-left"></i> 《dubbo源码深度解析》之protocol 远程调用层
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/15/dubbo-transport/" rel="prev" title="《dubbo源码深度解析》之transport 网络传输层">
+                《dubbo源码深度解析》之transport 网络传输层 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -498,6 +496,17 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -518,8 +527,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -579,6 +597,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Exchanger"><span class="nav-number">1.</span> <span class="nav-text">Exchanger</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ExchangeHandler"><span class="nav-number">2.</span> <span class="nav-text">ExchangeHandler</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ChannelHandler"><span class="nav-number">3.</span> <span class="nav-text">ChannelHandler</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ExchangeClient"><span class="nav-number">4.</span> <span class="nav-text">ExchangeClient</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -712,6 +746,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
@@ -758,6 +796,30 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'gggfniw',
+            repo: 'gggfniw.github.io',
+            
+            lang: "zh-Hans" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'd747e55675e3a85da023b93e9b078f1ab05275d6',
+            
+                client_id: '421936780ee8d59cc0af'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
     
 
 
